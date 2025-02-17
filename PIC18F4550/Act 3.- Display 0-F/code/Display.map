@@ -1,0 +1,47 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Tue Feb 23 02:14:21 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000038
+ .config_300000_DISPLAY.O       code   0x300000    program   0x000002
+ .config_300002_DISPLAY.O       code   0x300002    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000037      
+                            0x300000    0x300003      
+            60 out of 16402 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                      D1S   0x00001e    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                      INC   0x00000a    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                   INICIO   0x000006    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L1   0x00002a    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L2   0x000026    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L3   0x000022    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+              SET_OUTPUTS   0x000018    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000006    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                      INC   0x00000a    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+              SET_OUTPUTS   0x000018    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                      D1S   0x00001e    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L3   0x000022    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L2   0x000026    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+                       L1   0x00002a    program     static C:\Users\Orlando\Desktop\4to Semeste mpf\Modulo\4.- Microcontroladores Correa\Act 3.- Display\Display.asm
+
+

@@ -1,0 +1,60 @@
+,,,;****************
+,,,;       PROGRAMA:               Programa que simula las luces de un automovil
+,,,;       OBJETIVO:                       Usar instrucciones para sacar valores por un puerto
+,,,;       FECHA:                  20 de Junio de 2020
+,,,;       DIESÑO:                 JLCM
+,,,;*********************************************************************
+,,,
+,,,;-------------- INCLUYO LA LIBRERIAS BÁSICAS DEL PROCESADOR ----------
+,,,                #INCLUDE "P18F452.INC"
+,,,                LIST P=18F452
+,,,;---------- CONFIGURACIÓN DE FUSIBLES DEL PROCESADOR -----------------
+00300000,FAFF,, __CONFIG _CONFIG1H, _HS_OSC_1H
+,,, __CONFIG _CONFIG2L, _BOR_OFF_2L & _PWRT_ON_2L
+00300002,FEFC,, __CONFIG _CONFIG2H, _WDT_OFF_2H
+,,,
+,,,;--------- DECLARACION DE VARIABLES TIPO BIT -------------------------
+,,,
+,,,
+,,,;--------- ECLARACION DE VARIABLES TIPO BYTE -------------------------
+,,,T1      EQU     21H
+,,,T2      EQU     22H
+,,,T3      EQU 23H
+,,,C1  EQU 20H
+,,,;---------- VECTOR DE PROGRAMA PRINCIPAL------------------------------
+00000000,,,                        ORG             0000H
+00000000,EC0F F000,,                        CALL    SET_OUTPUTS
+00000004,D000,,                        BRA             INICIO
+,,,
+,,,;------------ PROGRAMA PRINCIPAL -------------------------------------
+00000006,0E00,INICIO,INICIO                  MOVLW   00H
+00000008,6E20,,                                MOVWF   C1,0
+0000000A,C020 FF82,INC,INC                             MOVFF   C1, PORTC
+0000000E,EC12 F000,,                                CALL    D1S
+00000012,0E09,,                                MOVLW   09H; Mueve el 9 H para compararlo
+00000014,6220,,                                CPFSEQ C1,0 ;Compara el file con Wreg
+00000016,D001,,                                        BRA S1; No
+00000018,D7F6,,                                BRA INICIO;Si
+,,,
+0000001A,2A20,S1,S1                              INCF C1,1,0
+0000001C,D7F6,,                                BRA INC
+,,,
+0000001E,0E00,SET_OUTPUTS,SET_OUTPUTS     MOVLW   00H
+00000020,6E94,,                        MOVWF   TRISC,0
+00000022,0012,,                        RETURN
+,,,
+00000024,0E41,D1S,D1S                     MOVLW   41H
+00000026,6E23,,                        MOVWF   T3,0
+00000028,0E37,L3,L3                      MOVLW   37H
+0000002A,6E22,,                        MOVWF   T2,0
+0000002C,0E5C,L2,L2                      MOVLW   5CH
+0000002E,6E21,,                        MOVWF   T1,0
+00000030,2E21,L1,L1                      DECFSZ  T1,1,0
+00000032,D7FE,,                                BRA             L1
+00000034,2E22,,                        DECFSZ  T2,1,0
+00000036,D7FA,,                                BRA             L2
+00000038,2E23,,                        DECFSZ  T3,1,0
+0000003A,D7F6,,                                BRA             L3
+0000003C,0012,,                        RETURN
+,,,
+,,,                        END
