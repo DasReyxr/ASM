@@ -1,0 +1,246 @@
+
+4LCD.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000010e  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000016  00800060  0000010e  00000182  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000198  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001c8  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000038  00000000  00000000  00000208  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000007af  00000000  00000000  00000240  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000595  00000000  00000000  000009ef  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002d5  00000000  00000000  00000f84  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000074  00000000  00000000  0000125c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000396  00000000  00000000  000012d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000266  00000000  00000000  00001666  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  000018cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	22 c0       	rjmp	.+68     	; 0x48 <__bad_interrupt>
+   4:	21 c0       	rjmp	.+66     	; 0x48 <__bad_interrupt>
+   6:	20 c0       	rjmp	.+64     	; 0x48 <__bad_interrupt>
+   8:	1f c0       	rjmp	.+62     	; 0x48 <__bad_interrupt>
+   a:	1e c0       	rjmp	.+60     	; 0x48 <__bad_interrupt>
+   c:	1d c0       	rjmp	.+58     	; 0x48 <__bad_interrupt>
+   e:	1c c0       	rjmp	.+56     	; 0x48 <__bad_interrupt>
+  10:	1b c0       	rjmp	.+54     	; 0x48 <__bad_interrupt>
+  12:	1a c0       	rjmp	.+52     	; 0x48 <__bad_interrupt>
+  14:	19 c0       	rjmp	.+50     	; 0x48 <__bad_interrupt>
+  16:	18 c0       	rjmp	.+48     	; 0x48 <__bad_interrupt>
+  18:	17 c0       	rjmp	.+46     	; 0x48 <__bad_interrupt>
+  1a:	16 c0       	rjmp	.+44     	; 0x48 <__bad_interrupt>
+  1c:	15 c0       	rjmp	.+42     	; 0x48 <__bad_interrupt>
+  1e:	14 c0       	rjmp	.+40     	; 0x48 <__bad_interrupt>
+  20:	13 c0       	rjmp	.+38     	; 0x48 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	ee e0       	ldi	r30, 0x0E	; 14
+  36:	f1 e0       	ldi	r31, 0x01	; 1
+  38:	02 c0       	rjmp	.+4      	; 0x3e <__SP_H__>
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+  3e:	a6 37       	cpi	r26, 0x76	; 118
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <__do_copy_data+0xc>
+  44:	4b d0       	rcall	.+150    	; 0xdc <main>
+  46:	61 c0       	rjmp	.+194    	; 0x10a <_exit>
+
+00000048 <__bad_interrupt>:
+  48:	db cf       	rjmp	.-74     	; 0x0 <__vectors>
+
+0000004a <_Z9send_datahi>:
+#define RS PA7  
+
+
+
+void send_data(uint8_t data, int cmd = 1) {
+    PORTC = data;              
+  4a:	85 bb       	out	0x15, r24	; 21
+    PORTA |= (cmd << RS);       
+  4c:	8b b3       	in	r24, 0x1b	; 27
+  4e:	76 95       	lsr	r23
+  50:	76 2f       	mov	r23, r22
+  52:	66 27       	eor	r22, r22
+  54:	77 95       	ror	r23
+  56:	67 95       	ror	r22
+  58:	68 2b       	or	r22, r24
+  5a:	6b bb       	out	0x1b, r22	; 27
+    PORTA |= (1 << EN);    
+  5c:	dd 9a       	sbi	0x1b, 5	; 27
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  5e:	85 e0       	ldi	r24, 0x05	; 5
+  60:	8a 95       	dec	r24
+  62:	f1 f7       	brne	.-4      	; 0x60 <_Z9send_datahi+0x16>
+  64:	00 00       	nop
+    _delay_us(1);          
+    PORTA &= ~(1 << EN);   
+  66:	dd 98       	cbi	0x1b, 5	; 27
+  68:	87 ec       	ldi	r24, 0xC7	; 199
+  6a:	90 e0       	ldi	r25, 0x00	; 0
+  6c:	01 97       	sbiw	r24, 0x01	; 1
+  6e:	f1 f7       	brne	.-4      	; 0x6c <_Z9send_datahi+0x22>
+  70:	00 c0       	rjmp	.+0      	; 0x72 <_Z9send_datahi+0x28>
+  72:	00 00       	nop
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  74:	8f e3       	ldi	r24, 0x3F	; 63
+  76:	9f e1       	ldi	r25, 0x1F	; 31
+  78:	01 97       	sbiw	r24, 0x01	; 1
+  7a:	f1 f7       	brne	.-4      	; 0x78 <_Z9send_datahi+0x2e>
+  7c:	00 c0       	rjmp	.+0      	; 0x7e <_Z9send_datahi+0x34>
+  7e:	00 00       	nop
+  80:	08 95       	ret
+
+00000082 <_Z11send_stringPKc>:
+    _delay_us(50);
+    _delay_ms(2);              
+}
+
+void send_string(const char *str) {
+  82:	cf 93       	push	r28
+  84:	df 93       	push	r29
+  86:	ec 01       	movw	r28, r24
+    while (*str) {
+  88:	88 81       	ld	r24, Y
+  8a:	88 23       	and	r24, r24
+  8c:	39 f0       	breq	.+14     	; 0x9c <_Z11send_stringPKc+0x1a>
+  8e:	21 96       	adiw	r28, 0x01	; 1
+        send_data(*str++);
+  90:	61 e0       	ldi	r22, 0x01	; 1
+  92:	70 e0       	ldi	r23, 0x00	; 0
+  94:	da df       	rcall	.-76     	; 0x4a <_Z9send_datahi>
+    _delay_us(50);
+    _delay_ms(2);              
+}
+
+void send_string(const char *str) {
+    while (*str) {
+  96:	89 91       	ld	r24, Y+
+  98:	81 11       	cpse	r24, r1
+  9a:	fa cf       	rjmp	.-12     	; 0x90 <_Z11send_stringPKc+0xe>
+        send_data(*str++);
+    }
+}
+  9c:	df 91       	pop	r29
+  9e:	cf 91       	pop	r28
+  a0:	08 95       	ret
+
+000000a2 <_Z10Config_LCDv>:
+
+void Config_LCD() {
+  a2:	0f 93       	push	r16
+  a4:	1f 93       	push	r17
+  a6:	cf 93       	push	r28
+  a8:	df 93       	push	r29
+  aa:	c0 e7       	ldi	r28, 0x70	; 112
+  ac:	d0 e0       	ldi	r29, 0x00	; 0
+  ae:	05 e7       	ldi	r16, 0x75	; 117
+  b0:	10 e0       	ldi	r17, 0x00	; 0
+    for (uint8_t i = 0; i < 5 ; i++) {
+        send_data(Config[i],0);
+  b2:	60 e0       	ldi	r22, 0x00	; 0
+  b4:	70 e0       	ldi	r23, 0x00	; 0
+  b6:	89 91       	ld	r24, Y+
+  b8:	c8 df       	rcall	.-112    	; 0x4a <_Z9send_datahi>
+        send_data(*str++);
+    }
+}
+
+void Config_LCD() {
+    for (uint8_t i = 0; i < 5 ; i++) {
+  ba:	c0 17       	cp	r28, r16
+  bc:	d1 07       	cpc	r29, r17
+  be:	c9 f7       	brne	.-14     	; 0xb2 <_Z10Config_LCDv+0x10>
+  c0:	2f ef       	ldi	r18, 0xFF	; 255
+  c2:	89 ef       	ldi	r24, 0xF9	; 249
+  c4:	90 e0       	ldi	r25, 0x00	; 0
+  c6:	21 50       	subi	r18, 0x01	; 1
+  c8:	80 40       	sbci	r24, 0x00	; 0
+  ca:	90 40       	sbci	r25, 0x00	; 0
+  cc:	e1 f7       	brne	.-8      	; 0xc6 <_Z10Config_LCDv+0x24>
+  ce:	00 c0       	rjmp	.+0      	; 0xd0 <_Z10Config_LCDv+0x2e>
+  d0:	00 00       	nop
+        send_data(Config[i],0);
+    }
+    _delay_ms(20);  
+}
+  d2:	df 91       	pop	r29
+  d4:	cf 91       	pop	r28
+  d6:	1f 91       	pop	r17
+  d8:	0f 91       	pop	r16
+  da:	08 95       	ret
+
+000000dc <main>:
+// ----------- Main -----------
+int main(void) {
+    DDRC = 0xFF;                           
+  dc:	8f ef       	ldi	r24, 0xFF	; 255
+  de:	84 bb       	out	0x14, r24	; 20
+    DDRA |= (1 << EN) | (1 << RS);         
+  e0:	8a b3       	in	r24, 0x1a	; 26
+  e2:	80 6a       	ori	r24, 0xA0	; 160
+  e4:	8a bb       	out	0x1a, r24	; 26
+    Config_LCD();                          
+  e6:	dd df       	rcall	.-70     	; 0xa2 <_Z10Config_LCDv>
+    while (1) {
+        send_data(0x80,0);                
+  e8:	60 e0       	ldi	r22, 0x00	; 0
+  ea:	70 e0       	ldi	r23, 0x00	; 0
+  ec:	80 e8       	ldi	r24, 0x80	; 128
+  ee:	ad df       	rcall	.-166    	; 0x4a <_Z9send_datahi>
+        send_string(Data1);                
+  f0:	80 e6       	ldi	r24, 0x60	; 96
+  f2:	90 e0       	ldi	r25, 0x00	; 0
+  f4:	c6 df       	rcall	.-116    	; 0x82 <_Z11send_stringPKc>
+  f6:	2f ef       	ldi	r18, 0xFF	; 255
+  f8:	83 ed       	ldi	r24, 0xD3	; 211
+  fa:	90 e3       	ldi	r25, 0x30	; 48
+  fc:	21 50       	subi	r18, 0x01	; 1
+  fe:	80 40       	sbci	r24, 0x00	; 0
+ 100:	90 40       	sbci	r25, 0x00	; 0
+ 102:	e1 f7       	brne	.-8      	; 0xfc <main+0x20>
+ 104:	00 c0       	rjmp	.+0      	; 0x106 <main+0x2a>
+ 106:	00 00       	nop
+ 108:	ef cf       	rjmp	.-34     	; 0xe8 <main+0xc>
+
+0000010a <_exit>:
+ 10a:	f8 94       	cli
+
+0000010c <__stop_program>:
+ 10c:	ff cf       	rjmp	.-2      	; 0x10c <__stop_program>

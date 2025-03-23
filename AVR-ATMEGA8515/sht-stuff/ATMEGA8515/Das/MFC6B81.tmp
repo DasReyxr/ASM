@@ -1,0 +1,197 @@
+; ----------- Orlando Reyes -----------
+; -------------- Auf Das --------------
+; --------------- 6Timer ---------------
+; ------------- 01/11/2024 -------------
+; ------------- Variables -------------
+; ---------------- Main ----------------
+.include "M8515def.inc"
+
+.def DIV = R18
+
+; ----- RAM -----
+.dseg 
+
+.equ OPT = 0x60
+.equ TIMESTOP = 0x61
+.equ TIME = 0x62
+; ----- Time Var -----
+.equ T_Cen = 0x90
+.equ T_Dec = 0x91
+.equ T_Uni = 0x92
+
+
+.cseg
+.org 0
+; --- Interruptions Config ---
+RJMP SETCONFIG   ; Reset Handler  
+RJMP EXT_INT0   ; IRQ0 Handler  
+RJMP EXT_INT1   ; IRQ1 Handler  
+RJMP TIM1_CAPT   ; Timer1 Capture Handler  
+RJMP TIM1_COMPA   ; Timer1 CompareA Handler  
+RJMP TIM1_COMPB   ; Timer1 CompareB Handler  
+RJMP TIM1_OVF   ; Timer1 Overflow Handler  
+RJMP TIM0_OVF   ; Timer0 Overflow Handler  
+RJMP SPI_STC   ; SPI Transfer Complete Handler  
+RJMP USART_RXC   ; USART RX Complete Handler  
+RJMP USART_UDRE   ; UDR Empty Handler  
+RJMP USART_TXC   ; USART TX Complete Handler  
+RJMP ANA_COMP  ; Analog Comparator Handler  
+RJMP EXT_INT2  ; IRQ2 Handler    (no AT90S8515)  
+RJMP TIM0_COMP  ; Timer0 Compare Handler  (no AT90S8515)  
+RJMP EE_RDY   ; EEPROM Ready Handler  (no AT90S8515)  
+RJMP SPM_RDY   ; Store Program Memory Ready Handler(no AT90S8515) 
+
+; ------ Configuration ------
+SETCONFIG:
+	LDI R16,high(RAMEND)
+	OUT SPH,R16   ; Set Stack Pointer to top of RAM
+	LDI R16,low(RAMEND) ; Parte baja
+	OUT SPL,R16  ; Inicializar la pila
+	CLI    ; Disable interrupts 
+    RCALL SET_TIMER
+
+
+; ----------- Init -----------
+INIT: 
+
+    RJMP INIT
+
+;------------- Subrutines ------------- 
+
+;--- LCD ---
+; --
+SET_LCD:
+			CBI PORTA,7 ;Enable A7
+            CBI PORTA,6 ; Command Mode RS = 0 A5
+
+            RCALL DELAY_5ms
+			RCALL DELAY_5ms
+			RCALL DELAY_5ms
+			LDI WREG, 0x38
+				RCALL LCDOUT				
+			LDI WREG, 0x38
+				RCALL LCDOUT
+			LDI WREG, 0x38
+				RCALL LCDOUT
+			LDI WREG, 0x38
+				RCALL LCDOUT			
+			LDI WREG, 0x08 ; Display OFF
+				RCALL LCDOUT
+			LDI WREG, 0x01 ; Clear Display 
+				RCALL LCDOUT			
+			LDI WREG, 0x06 ; Entry Mode Set 
+				RCALL LCDOUT				
+			LDI WREG, 0x0C ; Display ON
+				RCALL LCDOUT
+			SBI PORTA, 6 ; Character Mode RS = 1
+		RET
+
+LCDOUT: 	
+			OUT PORTC, WREG
+			SBI PORTA,7 
+			RCALL DELAY_5ms
+			CBI PORTA,7 
+			RET
+
+DELAY_5ms:
+		 	LDI		R19,157
+D2:			LDI		R18,255
+D1:			DEC 	R18			;12.2ms
+			BRNE	D1	
+			DEC		R19
+			BRNE 	D2
+			RET
+
+
+;--- Timer ---
+SET_TIMER:
+        ldi r16,0x7A	;F4
+        out OCR1AH,r16
+        out OCR1BH,r16
+        ldi r16,0x12	;24
+        out OCR1AL,r16
+        out OCR1BL,r16
+        ldi r16,0x40	
+        out TCCR1A,r16	;Toggle OC1A cada compare match, modo normal
+        ldi r16,0x0C
+        out TCCR1B,r16	;modo CTC, start
+
+        ;interrupciones para el timer en OCR1A
+        ldi r16,0x40
+        out TIMSK,r16
+        sei				;mascara general de interrupciones
+    RET
+
+;--- Division ---
+; 
+DIV100:
+	    CLR R19          
+		LDI WREG, 0
+		STS T_Cen, WREG
+		STS T_Dec, WREG
+		STS T_Uni, WREG
+	CICLO1:
+		CPI T_Time, 100
+		BRLO ES100	
+		INC R19          
+		SUBI T_Time,100     
+		CPI T_Time,100      
+		
+		BRPL CICLO1 
+
+	SAVE1:     
+		STS T_Cen, R19    ; Centenas
+		CLR R19          
+
+	CICLO2:
+		CPI T_Time, 10
+		BRLO ES10
+		INC R19          
+		SUBI T_Time,10      
+		CPI T_Time, 10      
+		BRPL CICLO2      
+
+	SAVE2:
+		STS T_Dec, R19    ; Decenas
+		STS T_Uni, T_Time ; Unidades
+
+		RET
+
+	ES100:
+		LDI R19, 0
+		RJMP SAVE1
+
+	ES10:
+		LDI R19, 0
+		RJMP SAVE2
+
+    
+
+; ------ Interrupciones ------ 
+EXT_INT0:  RETI    ; IRQ0 Handler 
+EXT_INT1:  RETI    ; IRQ1 Handler 
+TIM1_CAPT:  RETI    ; Timer1 Capture Handler 
+TIM1_COMPA:	
+        ldi r16,0			; Timer1 CompareA Handler
+        out TCNT1H,r16		;reiniciar timer
+        out TCNT1L,r16
+        COM R17 
+        
+        sbis r17
+        cbi portb,0
+        sbrc r17
+        sbi portb,0
+        RETI 
+
+TIM1_COMPB: RETI    ; Timer1 CompareB Handler 
+TIM1_OVF:  RETI    ; Timer1 Overflow Handler 
+TIM0_OVF:  RETI    ; Timer0 Overflow Handler 
+SPI_STC:  RETI    ; SPI Transfer Complete Handler 
+USART_RXC:  RETI    ; USART RX Complete Handler 
+USART_UDRE: RETI    ; UDR Empty Handler 
+USART_TXC:  RETI    ; USART TX Complete Handler 
+ANA_COMP:  RETI    ; Analog Comparator Handler 
+EXT_INT2:  RETI    ; IRQ2 Handler 
+TIM0_COMP:  RETI    ; Timer0 Compare Handler 
+EE_RDY:  RETI    ; EEPROM Ready Handler 
+SPM_RDY:  RETI    ; Store Program Memory Ready Handler

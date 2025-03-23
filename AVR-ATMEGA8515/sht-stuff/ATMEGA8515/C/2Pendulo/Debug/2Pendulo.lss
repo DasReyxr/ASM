@@ -1,0 +1,229 @@
+
+2Pendulo.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000f8  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000002  00800060  000000f8  0000016c  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000016e  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001a0  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000028  00000000  00000000  000001e0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000572  00000000  00000000  00000208  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004d4  00000000  00000000  0000077a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002c0  00000000  00000000  00000c4e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000034  00000000  00000000  00000f10  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000344  00000000  00000000  00000f44  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000006a  00000000  00000000  00001288  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000018  00000000  00000000  000012f2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	22 c0       	rjmp	.+68     	; 0x48 <__bad_interrupt>
+   4:	21 c0       	rjmp	.+66     	; 0x48 <__bad_interrupt>
+   6:	20 c0       	rjmp	.+64     	; 0x48 <__bad_interrupt>
+   8:	1f c0       	rjmp	.+62     	; 0x48 <__bad_interrupt>
+   a:	1e c0       	rjmp	.+60     	; 0x48 <__bad_interrupt>
+   c:	1d c0       	rjmp	.+58     	; 0x48 <__bad_interrupt>
+   e:	1c c0       	rjmp	.+56     	; 0x48 <__bad_interrupt>
+  10:	1b c0       	rjmp	.+54     	; 0x48 <__bad_interrupt>
+  12:	1a c0       	rjmp	.+52     	; 0x48 <__bad_interrupt>
+  14:	19 c0       	rjmp	.+50     	; 0x48 <__bad_interrupt>
+  16:	18 c0       	rjmp	.+48     	; 0x48 <__bad_interrupt>
+  18:	17 c0       	rjmp	.+46     	; 0x48 <__bad_interrupt>
+  1a:	16 c0       	rjmp	.+44     	; 0x48 <__bad_interrupt>
+  1c:	15 c0       	rjmp	.+42     	; 0x48 <__bad_interrupt>
+  1e:	14 c0       	rjmp	.+40     	; 0x48 <__bad_interrupt>
+  20:	13 c0       	rjmp	.+38     	; 0x48 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	e8 ef       	ldi	r30, 0xF8	; 248
+  36:	f0 e0       	ldi	r31, 0x00	; 0
+  38:	02 c0       	rjmp	.+4      	; 0x3e <__SP_H__>
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+  3e:	a2 36       	cpi	r26, 0x62	; 98
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <__do_copy_data+0xc>
+  44:	13 d0       	rcall	.+38     	; 0x6c <main>
+  46:	56 c0       	rjmp	.+172    	; 0xf4 <_exit>
+
+00000048 <__bad_interrupt>:
+  48:	db cf       	rjmp	.-74     	; 0x0 <__vectors>
+
+0000004a <_Z13dynamic_delayi>:
+#include <avr/io.h>
+#include <util/delay.h>
+
+// --------- Function ---------
+void dynamic_delay(int ms) {
+	for (int i = 0; i < ms; i++) {
+  4a:	18 16       	cp	r1, r24
+  4c:	19 06       	cpc	r1, r25
+  4e:	6c f4       	brge	.+26     	; 0x6a <_Z13dynamic_delayi+0x20>
+  50:	20 e0       	ldi	r18, 0x00	; 0
+  52:	30 e0       	ldi	r19, 0x00	; 0
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  54:	ef e9       	ldi	r30, 0x9F	; 159
+  56:	ff e0       	ldi	r31, 0x0F	; 15
+  58:	31 97       	sbiw	r30, 0x01	; 1
+  5a:	f1 f7       	brne	.-4      	; 0x58 <_Z13dynamic_delayi+0xe>
+  5c:	00 c0       	rjmp	.+0      	; 0x5e <_Z13dynamic_delayi+0x14>
+  5e:	00 00       	nop
+  60:	2f 5f       	subi	r18, 0xFF	; 255
+  62:	3f 4f       	sbci	r19, 0xFF	; 255
+  64:	82 17       	cp	r24, r18
+  66:	93 07       	cpc	r25, r19
+  68:	a9 f7       	brne	.-22     	; 0x54 <_Z13dynamic_delayi+0xa>
+  6a:	08 95       	ret
+
+0000006c <main>:
+int time = 20;
+
+// ----------- Main -----------
+int main(void) {
+	// Configure PB1 and PB2 as input
+	DDRB  &= ~(1 << B1) | ~(1 << B2);  
+  6c:	87 b3       	in	r24, 0x17	; 23
+  6e:	87 bb       	out	0x17, r24	; 23
+	PORTB |= (1 << B1) | (1 << B2);  
+  70:	88 b3       	in	r24, 0x18	; 24
+  72:	86 60       	ori	r24, 0x06	; 6
+  74:	88 bb       	out	0x18, r24	; 24
+
+	DDRC  = 0x01;
+  76:	81 e0       	ldi	r24, 0x01	; 1
+  78:	84 bb       	out	0x14, r24	; 20
+	
+	DDRA  = 0xFF; 
+  7a:	9f ef       	ldi	r25, 0xFF	; 255
+  7c:	9a bb       	out	0x1a, r25	; 26
+	PORTA = 0x01;  
+  7e:	8b bb       	out	0x1b, r24	; 27
+		dynamic_delay(time);
+		
+		PORTA <<= 1;
+
+		if (PORTA == 0x80){
+			PORTA = 0x01;
+  80:	c1 e0       	ldi	r28, 0x01	; 1
+		}
+		
+		if (!(PINB & (1 << B1))) {  // Button pressed
+				PORTC = 0x00;
+				time -= 20;
+				if (time < 20) time = 20;  // Prevent negative delay
+  82:	04 e1       	ldi	r16, 0x14	; 20
+  84:	10 e0       	ldi	r17, 0x00	; 0
+	
+	DDRA  = 0xFF; 
+	PORTA = 0x01;  
+
+	while (1) {
+		dynamic_delay(time);
+  86:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+  8a:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  8e:	dd df       	rcall	.-70     	; 0x4a <_Z13dynamic_delayi>
+		
+		PORTA <<= 1;
+  90:	8b b3       	in	r24, 0x1b	; 27
+  92:	88 0f       	add	r24, r24
+  94:	8b bb       	out	0x1b, r24	; 27
+
+		if (PORTA == 0x80){
+  96:	8b b3       	in	r24, 0x1b	; 27
+  98:	80 38       	cpi	r24, 0x80	; 128
+  9a:	09 f4       	brne	.+2      	; 0x9e <main+0x32>
+			PORTA = 0x01;
+  9c:	cb bb       	out	0x1b, r28	; 27
+		}
+		
+		if (!(PINB & (1 << B1))) {  // Button pressed
+  9e:	b1 99       	sbic	0x16, 1	; 22
+  a0:	19 c0       	rjmp	.+50     	; 0xd4 <main+0x68>
+				PORTC = 0x00;
+  a2:	15 ba       	out	0x15, r1	; 21
+				time -= 20;
+  a4:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+  a8:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  ac:	44 97       	sbiw	r24, 0x14	; 20
+				if (time < 20) time = 20;  // Prevent negative delay
+  ae:	84 31       	cpi	r24, 0x14	; 20
+  b0:	91 05       	cpc	r25, r1
+  b2:	2c f0       	brlt	.+10     	; 0xbe <main+0x52>
+			PORTA = 0x01;
+		}
+		
+		if (!(PINB & (1 << B1))) {  // Button pressed
+				PORTC = 0x00;
+				time -= 20;
+  b4:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  b8:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <__DATA_REGION_ORIGIN__>
+  bc:	04 c0       	rjmp	.+8      	; 0xc6 <main+0x5a>
+				if (time < 20) time = 20;  // Prevent negative delay
+  be:	10 93 61 00 	sts	0x0061, r17	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  c2:	00 93 60 00 	sts	0x0060, r16	; 0x800060 <__DATA_REGION_ORIGIN__>
+				dynamic_delay(time);
+  c6:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+  ca:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  ce:	bd df       	rcall	.-134    	; 0x4a <_Z13dynamic_delayi>
+
+				while (!(PINB & (1 << B1)));  // Wait until button released
+  d0:	b1 9b       	sbis	0x16, 1	; 22
+  d2:	fe cf       	rjmp	.-4      	; 0xd0 <main+0x64>
+			
+		}
+
+		if (!(PINB & (1 << B2))) {  // Button pressed
+  d4:	b2 99       	sbic	0x16, 2	; 22
+  d6:	d7 cf       	rjmp	.-82     	; 0x86 <main+0x1a>
+				PORTC = 0x01;
+  d8:	c5 bb       	out	0x15, r28	; 21
+				time += 20;
+  da:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+  de:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  e2:	44 96       	adiw	r24, 0x14	; 20
+  e4:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  e8:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <__DATA_REGION_ORIGIN__>
+				dynamic_delay(time);
+  ec:	ae df       	rcall	.-164    	; 0x4a <_Z13dynamic_delayi>
+
+				while (!(PINB & (1 << B2)));  // Wait until button released
+  ee:	b2 9b       	sbis	0x16, 2	; 22
+  f0:	fe cf       	rjmp	.-4      	; 0xee <main+0x82>
+  f2:	c9 cf       	rjmp	.-110    	; 0x86 <main+0x1a>
+
+000000f4 <_exit>:
+  f4:	f8 94       	cli
+
+000000f6 <__stop_program>:
+  f6:	ff cf       	rjmp	.-2      	; 0xf6 <__stop_program>

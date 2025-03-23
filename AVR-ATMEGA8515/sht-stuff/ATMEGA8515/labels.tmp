@@ -1,0 +1,51 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.42</VERSION>
+ <DEVICE>ATmega8515</DEVICE>
+ <WORKING_DIR>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\M8515def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <SETCONFIG><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>31</LINE></SETCONFIG>
+  <EXT_INT0><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>116</LINE></EXT_INT0>
+  <EXT_INT1><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>117</LINE></EXT_INT1>
+  <TIM1_CAPT><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>118</LINE></TIM1_CAPT>
+  <TIM1_COMPA><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>119</LINE></TIM1_COMPA>
+  <TIM1_COMPB><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>120</LINE></TIM1_COMPB>
+  <TIM1_OVF><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>121</LINE></TIM1_OVF>
+  <TIM0_OVF><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>122</LINE></TIM0_OVF>
+  <SPI_STC><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>123</LINE></SPI_STC>
+  <USART_RXC><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>124</LINE></USART_RXC>
+  <USART_UDRE><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>125</LINE></USART_UDRE>
+  <USART_TXC><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>126</LINE></USART_TXC>
+  <ANA_COMP><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>127</LINE></ANA_COMP>
+  <EXT_INT2><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>128</LINE></EXT_INT2>
+  <TIM0_COMP><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>129</LINE></TIM0_COMP>
+  <EE_RDY><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>130</LINE></EE_RDY>
+  <SPM_RDY><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>131</LINE></SPM_RDY>
+  <INIT><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>49</LINE></INIT>
+  <M1><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>51</LINE></M1>
+  <DELAY><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>74</LINE></DELAY>
+  <BOTONES><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>90</LINE></BOTONES>
+  <M2><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>61</LINE></M2>
+  <T3><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>76</LINE></T3>
+  <T2><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>78</LINE></T2>
+  <T1><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>80</LINE></T1>
+  <B1><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>98</LINE></B1>
+  <B2><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>105</LINE></B2>
+  <SAVE><FILE>C:\Users\Das\Dropbox\Obsidian\Electronics\3-Arquitectura_de_Computadoras\ATMEGA8515\2Pendulo.asm</FILE><LINE>112</LINE></SAVE>
+ </LABELS>
+</ASSEMBLER_INFO>

@@ -1,0 +1,43 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.42</VERSION>
+ <DEVICE>ATmega162</DEVICE>
+ <WORKING_DIR>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\m162def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <PRINCIPAL><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>19</LINE></PRINCIPAL>
+  <INT_EXT_0><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>151</LINE></INT_EXT_0>
+  <INT_EXT_1><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>530</LINE></INT_EXT_1>
+  <INICIO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>45</LINE></INICIO>
+  <CICLO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>48</LINE></CICLO>
+  <TIEMPO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>133</LINE></TIEMPO>
+  <L1><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>137</LINE></L1>
+  <TABLA><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>147</LINE></TABLA>
+  <CERO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>188</LINE></CERO>
+  <UNO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>222</LINE></UNO>
+  <DOS><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>256</LINE></DOS>
+  <TRES><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>290</LINE></TRES>
+  <CUATRO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>325</LINE></CUATRO>
+  <CINCO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>360</LINE></CINCO>
+  <SEIS><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>394</LINE></SEIS>
+  <SIETE><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>428</LINE></SIETE>
+  <OCHO><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>462</LINE></OCHO>
+  <NUEVE><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>496</LINE></NUEVE>
+  <TIEMPO_I><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>614</LINE></TIEMPO_I>
+  <L2><FILE>C:\Users\Das\Dropbox\Obsidian\Fisica\3-UAA\Arquitectura_de_Computadoras\ATMEGA162\9TimerDisplays.asm</FILE><LINE>617</LINE></L2>
+ </LABELS>
+</ASSEMBLER_INFO>

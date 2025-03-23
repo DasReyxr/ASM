@@ -1,0 +1,73 @@
+ .include "M8515def.inc"
+
+; Definiciones
+#define PTO_SERVO    PORTB           ; Puerto del servo
+#define DDR_SERVO    DDRB            ; Dirección del puerto
+#define SERVO_PIN    1               ; Pin del servomotor conectado a OC1A
+
+.cseg
+.org 0
+
+; Vector de interrupciones
+rjmp RESET           ; Reset Handler
+
+
+RESET:
+    ; Inicializar pila
+    ldi r16, high(RAMEND)
+    out SPH, r16
+    ldi r16, low(RAMEND)
+    out SPL, r16
+
+    cli                 ; Desactiva interrupciones
+
+    ; Configuración del pin del servomotor
+    sbi DDR_SERVO, SERVO_PIN  ; Configura SERVO_PIN como salida
+
+    ; Configuración de Timer1 para PWM
+    ldi r16, 0x00
+    out TCNT1H, r16
+    out TCNT1L, r16
+
+    ; Período de 20 ms (50 Hz): ICR1 = 19999 (16 MHz y prescaler = 8)
+    ldi r16, high(19999)
+    out ICR1H, r16
+    ldi r16, low(19999)
+    out ICR1L, r16
+
+    ; Ciclo de trabajo inicial (ángulo 0°): OCR1A = 1500 (1.5 ms)
+    ldi r16, high(1500)
+    out OCR1AH, r16
+    ldi r16, low(1500)
+    out OCR1AL, r16
+
+    ; Configuración de TCCR1A y TCCR1B para modo Fast PWM, canal A
+    ldi r16, (1<<COM1A1) | (1<<WGM11)  ; PWM en OC1A
+    out TCCR1A, r16
+    ldi r16, (1<<WGM13) | (1<<WGM12) | (1<<CS11) ; Prescaler = 8
+    out TCCR1B, r16
+
+
+
+    sei                 ; Activa interrupciones
+
+MAIN:
+    rcall GIRAR_DER
+    rjmp MAIN           ; Bucle principal
+
+; Interrupción de recepción USART
+
+GIRAR_IZQ:
+    ldi r16, high(2000) ; Pulso de 2 ms
+    out OCR1AH, r16
+    ldi r16, low(2000)
+    out OCR1AL, r16
+    ret
+
+GIRAR_DER:
+    ldi r16, high(1000) ; Pulso de 1 ms
+    out OCR1AH, r16
+    ldi r16, low(1000)
+    out OCR1AL, r16
+    ret
+
