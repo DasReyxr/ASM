@@ -22,6 +22,7 @@ GPIOC_ODR       EQU (GPIOC_BASE + 0x14)
 ;-- Special Registers --
 GPIOC_BSSR       EQU (GPIOC_BASE + 0x18) ; Bit Set Set Register
 
+ledilei        EQU 10000000
 
 	AREA myData, DATA, READWRITE
 
@@ -69,5 +70,11 @@ Config_GPIO
 
 
     BX      LR
+dilei 
+    ldr   R0, =ledilei
+d1  
+    subs    r0,r0,#1
+    bne     d1
+    BX LR
 
 	end
