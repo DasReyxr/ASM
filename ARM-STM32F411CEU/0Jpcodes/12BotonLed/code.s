@@ -1,7 +1,7 @@
 ; ----------- Orlando Reyes -----------
 ; -------------- Auf Das --------------
-; -------------- PORTS --------------
-; ------------- 18/03/2025 -------------
+; -------------- LED --------------
+; ------------- 25/03/2025 -------------
 ; ------------- Variables -------------
 
 ; ---------------- Main ----------------
@@ -34,47 +34,61 @@ __main
     BL      Config_RCC
     BL      Config_GPIO
 
-
-;    LDR     R0, =GPIOC_BSSR
-;    EOR     R1,R1
-;    ORR     R1,R1, #0x0200 ; 0010 0000 0000 0000
-;    STR     R1,[R0] 
+    mov     R2, #0x2000
+    eor     r3,r3
 
 loop
+    ldr     r0, =GPIOC_PUPDR
+    ldr     r1,[r0]
+    and     r1,#0x4000
+    cmp     r1,#0x4000
+    bne     presionado
+
     ldr     r0, =GPIOC_ODR
     ldr     r1,[r0]
-    movw    r2, #0x2000
-    eor     r1,r2
+    orr     r1,r2
     str     r1,[r0]
-    bl      dilei
     b       loop
     
+    
+presionado 
+    ldr     r0, =GPIOC_ODR
+    ldr     r1,[r0]
+    and     r1,r3
+    str     r1,[r0]
 
 
 Config_RCC
-    LDR     R0,=RCC_AHB1
-    LDR     R1,[R0]
-    ORR     R1,R1,#4
-    STR     R1,[R0]
-    BX      LR
+    ldr     R0,=RCC_AHB1
+    ldr     R1,[R0]
+    orr     R1,R1,#4
+    str     R1,[R0]
+    bx      LR
 
 Config_GPIO
+    ;Configuramos el PC13 como salida de proposito general PushPull (pp) y el pC14 como entrada
     LDR     R0, =GPIOC_MODER
     LDR     R1, [R0]
-    MOVW    R2, #0x4000
-    ORR     R1,R1,R2
-    STR     R1,[R0]
+    ldr     r2, =0x04000000
+    orr     r1,r1,r2
+    str     r1,[r0]
 
 
-    LDR     R0, =GPIOC_OSPEED
-    LDR     R1, [R0]
-    MOVW    R2, #0x
-    
-    ORR     R1,R1,R2
-    STR     R1,[R0]
+    ldr     R0, =GPIOC_OSPEED
+    ldr     R1, [R0]
+    mov     R2, #0x0C000000
+    orr     R1,R1,R2
+    str     R1,[R0]
 
+	;Configuramos el PC14 como salida de proposito general PushPull (pp)
+	ldr     r0,=GPIOx_PUPDR
+	ldr     r1,[R0]
+	ldr     r2,=0x10000000
+	orr     r1,r2, r2
+	str     r1,[R0]
 
     BX      LR
+
 dilei 
     ldr   R0, =ledilei
 dei  
