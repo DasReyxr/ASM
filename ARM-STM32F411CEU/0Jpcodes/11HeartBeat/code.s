@@ -68,8 +68,7 @@ Config_GPIO
 
     LDR     R0, =GPIOC_OSPEED
     LDR     R1, [R0]
-    MOVW    R2, #0x
-    
+    MOVW    R2, #0x3
     ORR     R1,R1,R2
     STR     R1,[R0]
 
