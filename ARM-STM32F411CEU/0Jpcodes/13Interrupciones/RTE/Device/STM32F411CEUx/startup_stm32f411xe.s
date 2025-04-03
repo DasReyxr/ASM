@@ -168,6 +168,13 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 
                 AREA    |.text|, CODE, READONLY
 
+EXTI_BASE       EQU 0x40013C00
+EXTI_IMR        EQU (EXTI_BASE + 0x00) ; Interrupt Mask Register
+EXTI_EMR        EQU (EXTI_BASE + 0x04) ; Event Mask Register
+EXTI_RTSR       EQU (EXTI_BASE + 0x08); Rissing Triger Selectio
+EXTI_FTSR       EQU (EXTI_BASE + 0x0C); Falling Triger Selectio
+EXTI_PR         EQU (EXTI_BASE + 0x14); Pending Register
+
 ; Reset handler
 Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
@@ -290,7 +297,19 @@ TAMP_STAMP_IRQHandler
 RTC_WKUP_IRQHandler                                
 FLASH_IRQHandler                                                       
 RCC_IRQHandler                                                            
-EXTI0_IRQHandler                                                          
+EXTI0_IRQHandler        
+        push{lr} ; push{r0-r3,lr} r0,r1,r2,r3,lr
+        ldr     R0, *EXTI_PR
+        ldr     r1,[r0]
+        tst     r1,#(1<<0)
+        beq     endHandler
+        bl      exti0Handler
+endHandler
+        pop{lr}
+
+        bl      lr
+
+
 EXTI1_IRQHandler                                                           
 EXTI2_IRQHandler                                                          
 EXTI3_IRQHandler                                                         
