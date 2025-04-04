@@ -13,7 +13,7 @@ EXTI_FTSR       EQU (EXTI_BASE + 0x0C); Falling Triger Selectio
 EXTI_PR         EQU (EXTI_BASE + 0x14); Pending Register
 
 NVIC_BASE       EQU 0xE000E100 
-NVIC_ISER0      EQU (NIVC_BASE + 0x00)
+NVIC_ISER0      EQU (NVIC_BASE + 0x00)
 
 
 SYSCFG_BASE     EQU 0x40013800 
@@ -57,6 +57,7 @@ ledileicuarto  EQU 1000000
     AREA juve3dstudio,CODE,READONLY
 	ENTRY
 	EXPORT __main
+    EXPORT exti0Handler
 
 __main
     BL      Config_RCC
@@ -78,10 +79,10 @@ loop
 Config_RCC
     LDR     R0,=RCC_AHB1     ; 0    00           0     0     0     0     0
     LDR     R1,[R0]          ;GPIOH RESERVE   GPIOE  GPIOD GPIOC GPIOB GPIOA
-    ORR     R1,(#5<<0)       ; 0    00           0    0     1     0     1
+    ORR     R1,#(0x5)       ; 0    00           0    0     1     0     1
     STR     R1,[R0]
 
-    LDR     R0,=RCC_PB2     
+    LDR     R0,=RCC_APB2     
     LDR     R1,[R0]         
     ORR     R1,#0x4000      
     STR     R1,[R0]
@@ -155,8 +156,31 @@ Config_NVIC
 ; esto es lo que la interrupcion realizara
 exti0Handler
     push{lr}
+    ldr     r0, =GPIOC_ODR
+    eor     r3,r3
+
+loop1
+    ldr     r1,[r0]
+    movw    r2, #0x2000
+    eor     r1,r2
+    str     r1,[r0]
+    push{r0}
+    bl      dilei2
+    push{r0}
+    add     r3,#1
+    cmp     r3,#0xA
+    bne     loop1
+    
     pop{lr}
     bx      lr
+
+dilei2 
+    ldr   R0, =ledilei
+dei2  
+    subs    r0,r0,#1
+    bne     dei
+    BX LR
+
 dilei 
     ldr   R0, =ledilei
 dei  
