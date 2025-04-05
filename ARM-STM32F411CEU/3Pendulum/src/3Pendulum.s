@@ -2,15 +2,17 @@
 ; ------------- 3 Pendulum -------------
 ; ------------- 01/04/2025 -------------
 ; ------------- Variables -------------
-;---- Registers Used
-; R0    Port Register
-; R1    Interrupt number
-; R2    Number Dela
-; R3    Pointer
-; R4    buttonpresed
-; PORTA LEDs
-; PORTB  Buttons
-
+;---- Registers Used ----
+; -- Main Code --
+; R2 -> 8 Bit value Oscillator
+; R3 -> 12 Bit value
+; R5 -> Delay Actual Value
+; R10 -> Min Value
+; R11 -> Max Value
+; -- Config --
+; R0 -> Temp pointer address
+; R1,R6 -> Temp Pointer value
+; R2,R7 -> Temp Config Value 
 ; ---------------- Main ----------------
 
 ; --------- Clocks ---------
@@ -45,6 +47,7 @@ GPIOB_ODR       EQU (GPIOB_BASE + 0x14)
 GPIOB_BSSR      EQU (GPIOB_BASE + 0x18) ; Bit Set Set Register
 
 led_delay       EQU 400000
+
     AREA my_data, DATA, READWRITE
 
     AREA myCode, CODE, READONLY
@@ -55,7 +58,6 @@ __main
     BL      confRCC
     BL      confGPIOC
     LDR     R5,=led_delay
-    LDR     R4,=led_delay
     MOVW    R2, #0x0070
     EOR     R3,R3
     LDR     R11, =1000000
@@ -75,9 +77,9 @@ ShiftR
     LDR     R7,[R6]    ; B7 B6 B5 B4 B3 B2 B1 B0 
     AND     R7,#0x0003 ; 0 0   0  1  1  0  0  0
     CMP     R7,#0x0002
-    BEQ     suma
+    BEQ     ADD1
     CMP     R7,#0x0001
-    BEQ     resta
+    BEQ     SUB1
     B       ShiftR
 
 ShiftL
@@ -93,23 +95,21 @@ ShiftL
     LDR     R7,[R6]    ; B7 B6 B5 B4 B3 B2 B1 B0 
     AND     R7,#0x0003 ; 0 0   0  1  1  0  0  0
     CMP     R7,#0x0002
-    BLEQ    suma
+    BLEQ    ADD1
     CMP     R7,#0x0001
-    BLEQ    resta
+    BLEQ    SUB1
     B       ShiftL
 
-suma
+ADD1
     CMP     R5, R11  ; if R5>r11 we substract 1 to the count (normal cycle) 
     BXHI    LR 
     ADD     R5,R5,#1 ; if R5 < r11, we add 1 to the next counter 
-    MOV     R4,R5
     BX      LR
 
-resta
-    CMP     R5,R10 ; if R5<=r10 we substract 1 to the count (normal cycle)
+SUB1
+    CMP     R5,R10 ; if R5<r10 we substract 1 to the count (normal cycle)
     BXLO    LR
-    SUB     R5,R5,#1 ; if R4>r10 we substract 1 to the next counter
-    MOV     R4,R5
+    SUB     R5,R5,#1 ; if r5>r10 we substract 1 to the next counter
     BX      LR
 
     ;================= Subrutinas =================
@@ -145,7 +145,6 @@ confGPIOC
 Delay
     SUBS    R5,R5,#1 ; Resta 1 al contador del delay
     BNE     Delay ; Brinca de regreso a Delay 1
-    MOV     R5,R4
     BX      LR
 
     ALIGN

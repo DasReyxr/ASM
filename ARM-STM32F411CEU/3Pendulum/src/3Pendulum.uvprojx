@@ -385,9 +385,9 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>Tarea3.s</FileName>
+              <FileName>3Pendulum.s</FileName>
               <FileType>2</FileType>
-              <FilePath>.\Tarea3.s</FilePath>
+              <FilePath>.\3Pendulum.s</FilePath>
             </File>
           </Files>
         </Group>

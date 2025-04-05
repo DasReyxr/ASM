@@ -224,8 +224,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Tarea3.s</PathWithFileName>
-      <FilenameWithoutPath>Tarea3.s</FilenameWithoutPath>
+      <PathWithFileName>.\3Pendulum.s</PathWithFileName>
+      <FilenameWithoutPath>3Pendulum.s</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
