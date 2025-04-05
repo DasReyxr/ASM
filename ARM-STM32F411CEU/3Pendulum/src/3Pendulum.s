@@ -1,5 +1,5 @@
 ; ----------- Iker | Das -----------
-; ------------- 3 Pendulum -------------
+; ------------- 3 Oscillator -------------
 ; ------------- 01/04/2025 -------------
 ; ------------- Variables -------------
 ;---- Registers Used ----
@@ -10,9 +10,9 @@
 ; R10 -> Min Value
 ; R11 -> Max Value
 ; -- Config --
-; R0 -> Temp pointer address
-; R1,R6 -> Temp Pointer value
-; R2,R7 -> Temp Config Value 
+; R0 -> &Temp pointer address
+; R1 -> *Temp Pointer value
+; R2 -> Temp Config Value 
 ; ---------------- Main ----------------
 
 ; --------- Clocks ---------
@@ -73,12 +73,12 @@ ShiftR
     LSR     R2,R2, #1
     BL      Delay
 
-    LDR     R6, =GPIOB_IDR
-    LDR     R7,[R6]    ; B7 B6 B5 B4 B3 B2 B1 B0 
-    AND     R7,#0x0003 ; 0 0   0  1  1  0  0  0
-    CMP     R7,#0x0002
+    LDR     R0, =GPIOB_IDR
+    LDR     R1,[R0]    ; B7 B6 B5 B4 B3 B2 B1 B0 
+    AND     R1,#0x0003 ; 0 0   0  1  1  0  0  0
+    CMP     R1,#0x0002
     BEQ     ADD1
-    CMP     R7,#0x0001
+    CMP     R1,#0x0001
     BEQ     SUB1
     B       ShiftR
 
@@ -92,11 +92,11 @@ ShiftL
     BL      Delay
 
     LDR     R6, =GPIOB_IDR
-    LDR     R7,[R6]    ; B7 B6 B5 B4 B3 B2 B1 B0 
-    AND     R7,#0x0003 ; 0 0   0  1  1  0  0  0
-    CMP     R7,#0x0002
+    LDR     R1,[R6]    ; B7 B6 B5 B4 B3 B2 B1 B0 
+    AND     R1,#0x0003 ; 0 0   0  1  1  0  0  0
+    CMP     R1,#0x0002
     BLEQ    ADD1
-    CMP     R7,#0x0001
+    CMP     R1,#0x0001
     BLEQ    SUB1
     B       ShiftL
 
@@ -112,11 +112,11 @@ SUB1
     SUB     R5,R5,#1 ; if r5>r10 we substract 1 to the next counter
     BX      LR
 
-    ;================= Subrutinas =================
+; ============== Configuration ============== 
 confRCC
-    LDR     R0,=RCC_AHB1ENR; 0   00    0    00  0    0   0    0    0
-    LDR     R1,[R0]     ;  GPIOH  RESERVED  GPIOE  RESERVED  GPIOEEN GPIOD  GPIOC   GPIOB   GPIOA
-    ORR     R1,R1,#0x03  ;   0   00     0    00  0    0   0    1    1
+    LDR     R0,=RCC_AHB1ENR     ;   0        00         0     00        0      0       0      0     0
+    LDR     R1,[R0]             ;  GPIOH  RESERVED  GPIOE  RESERVED  GPIOE   GPIOD  GPIOC   GPIOB   GPIOA
+    ORR     R1,R1,#0x03         ;   0        00        0      00        0       0      0      1      1
     STR     R1,[R0]
     BX      LR
 
