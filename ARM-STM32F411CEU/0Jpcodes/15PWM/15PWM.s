@@ -111,7 +111,7 @@ Config_TIM
 	STR		R1,[R0]
 	
 	LDR 	R0, =TIM2_ARR
-	MOV 	R1, #23999 ; Tim_Period -->(24000-1)
+	MOV 	R1, #23990 ; Tim_Period -->(24000-1)
 	STR		R1,[R0]
 	
     LDR 	R0, =TIM2_CCMR1

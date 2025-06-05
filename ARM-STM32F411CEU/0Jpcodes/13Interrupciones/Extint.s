@@ -24,15 +24,15 @@ RCC_AHB1        EQU (RCC_BASE  + 0x30)
 RCC_APB2        EQU (RCC_BASE  + 0x44)
 
 ; -- GPIO C --
-GPIOC_BASE       EQU 0x40020800
-GPIOC_MODER      EQU (GPIOC_BASE + 0x00)
+GPIOB_BASE       EQU 0x40020400 ; 0x4002 0400 
+GPIOB_MODER      EQU (GPIOB_BASE + 0x00)
 ;-- Configuration Registers --
-GPIOC_OTYPER    EQU (GPIOC_BASE + 0x04)
-GPIOC_OSPEED    EQU (GPIOC_BASE + 0x08)
-GPIOC_PUPDR     EQU (GPIOC_BASE + 0x0C)
+GPIOB_OTYPER    EQU (GPIOB_BASE + 0x04)
+GPIOB_OSPEED    EQU (GPIOB_BASE + 0x08)
+GPIOB_PUPDR     EQU (GPIOB_BASE + 0x0C)
 ;-- Comm Registers --
-GPIOC_IDR       EQU (GPIOC_BASE + 0x10)
-GPIOC_ODR       EQU (GPIOC_BASE + 0x14)
+GPIOB_IDR       EQU (GPIOB_BASE + 0x10)
+GPIOB_ODR       EQU (GPIOB_BASE + 0x14)
 
 
 ; -- GPIO A --
@@ -63,12 +63,12 @@ __main
     BL      Config_RCC
     BL      Config_GPIO
     bl      Config_EXTI
-   ; bl      Config_Syscfg
+    bl      Config_Syscfg
     bl      Config_NVIC
 loop
-    ldr     r0, =GPIOC_ODR
+    ldr     r0, =GPIOB_ODR
     ldr     r1,[r0]
-    movw    r2, #0x2000
+    movw    r2, #0x0001
     eor     r1,r2
     str     r1,[r0]
     bl      dilei
@@ -77,9 +77,9 @@ loop
 
 
 Config_RCC
-    LDR     R0,=RCC_AHB1     ; 0    00           0     0     0     0     0
-    LDR     R1,[R0]          ;GPIOH RESERVE   GPIOE  GPIOD GPIOC GPIOB GPIOA
-    ORR     R1,#(0x5)       ; 0    00           0    0     1     0     1
+    LDR     R0,=RCC_AHB1     ; 0    00           0     0     0     0     0 
+    LDR     R1,[R0]          ;GPIOH RESERVE   GPIOE  GPIOD GPIOB GPIOB GPIOA ; tiene un 5 se le cambia a un 3
+    ORR     R1,#(0x3)        ; 0    00           0    0      0     1     1
     STR     R1,[R0]
 
     LDR     R0,=RCC_APB2     
@@ -105,12 +105,16 @@ Config_GPIO
     ORR     R2,R1, #0x02 
     STR     R1,[R0]
 
-
-
-    ;--- PORTC ---
-    LDR     R0, =GPIOC_MODER
+    ;--- PORTB ---
+    LDR     R0, =GPIOB_MODER
     LDR     R1, [R0]
-    MOVW    R2, #0x4000
+    MOVW    R2, #0x0001
+    ORR     R1,R1,R2
+    STR     R1,[R0]
+
+    LDR     R0, =GPIOB_OSPEED
+    LDR     R1, [R0]
+    MOVW    R2, #0x0003
     ORR     R1,R1,R2
     STR     R1,[R0]
 
@@ -128,10 +132,6 @@ Config_EXTI
     orr     R1,R1,#0x01 ; activando bit 0 de la exti
     str     R1,[R0]
 
-    ldr     R0, =EXTI_RTSR
-    ldr     R1, [R0]
-    orr     R1,R1,#0x01 ; activando bit 0 de la exti
-    str     R1,[R0]
 
 
     bx      lr
@@ -156,7 +156,7 @@ Config_NVIC
 ; esto es lo que la interrupcion realizara
 exti0Handler
     push{lr}
-    ldr     r0, =GPIOC_ODR
+    ldr     r0, =GPIOB_ODR
     eor     r3,r3
 
 loop1
