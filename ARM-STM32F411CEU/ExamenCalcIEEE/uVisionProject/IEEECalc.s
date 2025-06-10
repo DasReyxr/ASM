@@ -148,7 +148,7 @@ Zero
     LSL  R5,#1
     ADDS R4, #1
     CMP  R4,#31
-	BNE  Fract
+	BPL  Fract
     BX   LR
 
 Limpiar
