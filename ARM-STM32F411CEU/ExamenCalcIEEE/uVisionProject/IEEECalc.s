@@ -20,20 +20,18 @@
 
 ;R9 Midvalue
 Sign1        EQU 0
-Val1         EQU 2147483648
-Frac1        EQU 0
-	
-;Decimal0s   EQU 1000
+Val1         EQU 12
+Frac1        EQU 00003
+;Decimal0s   EQU 10000 
 Sign2       EQU 0
-Val2        EQU 1
-Frac2       EQU 1
-Decimal0s   EQU 1000 ;10^6       Cada cero una divicion entre 10
+Val2        EQU 0
+Frac2       EQU 10
+Decimal0s   EQU 10000 ;
 ; SIGN << 32
 ; EXP=158-CLZ(Val)=31-CLZ(Val)+127
 ; EXP <<23
 
 ; VAL<<EXP-104=23-EXP-127
-
 
 	AREA data, DATA, READWRITE
 	AREA juve3dstudio,CODE,READONLY
@@ -45,75 +43,103 @@ __main
 
     LDR     R11, =Frac1
     LDR     R3, =Decimal0s
-	;LDR     R4, =31
+    LDR     R4, =31
     BL      Fract
 
     LDR     R2, =Val1
     BL      Integer
 
-	LDR     R2,=Val1
+    LDR     R2,=Val1
     BL      Exponente
 
-	LDR     R7,=Sign1
+    LDR     R7,=Sign1
     BL      Signo
 
-	PUSH{R9}
-	EOR 	R9,R9
-	BL 		Limpiar
+    PUSH{R9}
+    EOR 	R9,R9
+    BL 		Limpiar
 
-	EOR     R2, R2
+    EOR     R2, R2
 
     LDR     R11, =Frac2
     LDR     R3, =Decimal0s
-    ;LDR     R4, =31
+    LDR     R4, =31
     BL      Fract
 
     LDR     R2, =Val2
     BL      Integer
-
-	LDR     R2,=Val2
-    BL      Exponente
-
-	LDR     R7,=Sign2
-    BL      Signo
-
-	PUSH{R9}
-	EOR 	R9,R9
-
-	BL 		Limpiar
-	EOR  R7,R7
-
-	POP {R2}
-	POP {R1}
-
+    LDR     R2,=Val2
+    BL      Exponente	
+    LDR     R7,=Sign2
+    BL      Signo	
+    PUSH{R9}
+    EOR 	R9,R9	
+    BL 		Limpiar
+    EOR  R7,R7
+    POP {R2}
+    POP {R1}
 
 ciclo
 	b ciclo
 
-
 Signo
-    LSL     R7, #31
+    LSL     R7, #31   
 	ORR 	R9, R7
     BX      LR
 
 Exponente
-	PUSH{LR}
-
+    PUSH{LR}
+    CMP R2, #0
+    BLEQ	ZeroExp
     CLZ     R3, R2
     RSB     R3, #158
     LSL     R3, #23
     ORR     R9,R3
-
-	POP{LR}
+    POP{LR}
     BX      LR
+
+ZeroExp 	
+	POP{LR}
+	LSL     R9, R7, #31   ;Signo 
+	
+	CMP		R11, #0	
+	BXEQ	LR
+	
+	EOR 	R9, R9
+	CLZ    R3, R12
+	ADD		R3, #1
+	
+	RSB		R3, #127
+	LSL     R3, #23
+	 
+	CLZ		R4, R12
+	ADD 	R4, #1
+	
+	LSL 	R12, R4
+
+	LSR		R12, #9
+	
+	ORR     R12,R3
+	ORR		R9, R12
+	CMP		R4,#10
+	BLHI	ExtendedPrecision
+	
+	BX LR
+
+ExtendedPrecision
+	push{lr}
+	rsb 	r4,#17
+	lsr		r8,r4
+	orr		r9,r8
+	pop{pc}
 
 Integer
     CLZ    R3, R2
     ADD    R3, #1
-
+    
     LSL    R2, R3
     LSR    R2, R3 ; aca tronamos el mas significativo
-
+    
     ;CLZ    R3, R2
     RSB    R3, R3, #32 ; numero de digitos
 
@@ -143,12 +169,32 @@ Fract
     BLE  Zero
     ORR  R5,#1
     SUB  R11,R3
-
+    
 Zero
     LSL  R5,#1
-    ADDS R4, #1
-    CMP  R4,#31
-	BPL  Fract
+    SUBS R4, #1
+    BPL  Fract
+	LSR	 R5,#1
+	
+	;R8 extended
+	LDR  R4,=7
+    
+
+Extended
+	LSL  R11,#1
+    CMP  R11,R3
+    BLE  Zero2
+    ORR  R8,#1
+    SUB  R11,R3
+    
+Zero2
+    LSL  R8,#1
+    SUBS R4, #1
+    BPL  Extended
+	LSR	 R8,#1
+	
+
+	
     BX   LR
 
 Limpiar
