@@ -204,8 +204,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\6FloatPoin.s</PathWithFileName>
-      <FilenameWithoutPath>6FloatPoin.s</FilenameWithoutPath>
+      <PathWithFileName>.\IEEECalc.s</PathWithFileName>
+      <FilenameWithoutPath>IEEECalc.s</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

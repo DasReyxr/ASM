@@ -20,7 +20,7 @@
 
 ;R9 Midvalue
 Sign1        EQU 0
-Val1         EQU 12
+Val1         EQU 0
 Frac1        EQU 00003
 ;Decimal0s   EQU 10000 
 Sign2       EQU 0
@@ -43,7 +43,6 @@ __main
 
     LDR     R11, =Frac1
     LDR     R3, =Decimal0s
-    LDR     R4, =31
     BL      Fract
 
     LDR     R2, =Val1
@@ -63,7 +62,6 @@ __main
 
     LDR     R11, =Frac2
     LDR     R3, =Decimal0s
-    LDR     R4, =31
     BL      Fract
 
     LDR     R2, =Val2
@@ -172,8 +170,9 @@ Fract
     
 Zero
     LSL  R5,#1
-    SUBS R4, #1
-    BPL  Fract
+    ADD R4, #1
+    CMP  R4,#32
+	BLO	Fract
 	LSR	 R5,#1
 	
 	;R8 extended

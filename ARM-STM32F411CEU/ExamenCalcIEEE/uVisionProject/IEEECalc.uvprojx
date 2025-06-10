@@ -385,9 +385,9 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>6FloatPoin.s</FileName>
+              <FileName>IEEECalc.s</FileName>
               <FileType>2</FileType>
-              <FilePath>.\6FloatPoin.s</FilePath>
+              <FilePath>.\IEEECalc.s</FilePath>
             </File>
           </Files>
         </Group>
