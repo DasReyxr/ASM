@@ -133,8 +133,8 @@ Convert
 
 	ADD 	r4,#0
 	; OUT
-	MOV 	R11, R6
-	MOV  	R2, R3
+	MOV 	R11, R6 ; Fract
+	MOV  	R10, R3
 	
 	EOR 	R1,R1
 	EOR 	R3,R3
