@@ -27,7 +27,7 @@ Frac1        EQU 2700
 Sign2       EQU 0
 Val2        EQU 0
 Frac2       EQU 10
-Decimal0s   EQU 10000 ;
+Decimal0s   EQU  ;
 ; SIGN << 32
 ; EXP=158-CLZ(Val)=31-CLZ(Val)+127
 ; EXP <<23
@@ -39,17 +39,17 @@ Decimal0s   EQU 10000 ;
 	EXPORT calc
 
 calc
-    ;LDR     R2, =Val1
-  
-	MOV		R3,R2
-	PUSH{R3}
-    ;LDR     R11, =Frac1
-    LDR     R3, =Decimal0s
+    
+	;Arg of Frac R11 
     BL      Fract
-
+    
+    MOV		R3,R2
+	PUSH{R3}
+    ;Arg of Integer R2
 	BL      Integer
+
 	POP{R2}
-  ;  LDR     R2,=Val1
+   ; Arg of Exp R2
     BL      Exponente
 
     LDR     R7,=Sign1
@@ -58,25 +58,14 @@ calc
     PUSH{R9}
     EOR 	R9,R9
     BL 		Limpiar
+    ; aqui se tiene q ir de retache    
     
-    EOR     R2, R2
-
-    LDR     R11, =Frac2
-    LDR     R3, =Decimal0s
-    BL      Fract
-
-    LDR     R2, =Val2
-    BL      Integer
-    LDR     R2,=Val2
-    BL      Exponente	
-    LDR     R7,=Sign2
-    BL      Signo	
+    
     PUSH{R9}
-    EOR 	R9,R9	
+    
     BL 		Limpiar
-    EOR     R7,R7
-    POP     {R2,R1}
-
+    POP     {R11,R12} ; Final Values
+ 
 ciclo
 	b ciclo
 
@@ -86,9 +75,10 @@ Signo
     BX      LR
 
 Exponente
+    ; arg r2 integer
     PUSH{LR}
-    CMP R2, #0
-    BLEQ	ZeroExp
+    CMP     R2, #0
+    BLEQ	ZeroVal
     CLZ     R3, R2
     RSB     R3, #158
     LSL     R3, #23
@@ -96,15 +86,15 @@ Exponente
     POP{LR}
     BX      LR
 
-ZeroExp 	
+ZeroVal 	
 	POP{LR}
-	LSL     R9, R7, #31   ;Signo 
+	LSL     R9, R7, #31   ;Signo se podria hacer tambien asi xd
 	
 	CMP		R11, #0	
 	BXEQ	LR
 	
 	EOR 	R9, R9
-	CLZ    R3, R12
+	CLZ     R3, R12
 	ADD		R3, #1
 	
 	RSB		R3, #127
@@ -132,6 +122,7 @@ ExtendedPrecision
 	pop{pc}
 
 Integer
+    ; Arg R2
     CLZ    R3, R2
     ADD    R3, #1
     
@@ -160,8 +151,9 @@ Integer
 Fract
 	EOR  R9,R9
     ;R2 valor fraccionario
-    ;R3 Presiocion
+    ;R3 Presicion
     ;R5 valor
+    LDR     R3, =Decimal0s
     LSL  R11,#1
     CMP  R11,R3
     BLT  Zero
