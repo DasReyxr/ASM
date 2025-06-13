@@ -60,6 +60,7 @@ FRAC   SPACE 6
 
     AREA juve3dstudio,CODE,READONLY
 	ENTRY
+	IMPORT calc
 	EXPORT __main
 
 __main
@@ -72,11 +73,16 @@ __main
 	MOV 	R6, #0
 
 LOOP
+	; -- IN --
 	; R1  character  from UART
 	; R0  Address General Purpose 
 	; R4 Counter for integer part
 	; R6 Counter for fractional part
 	; R5 Flag for decimal point
+
+	; -- OUT --
+	; R3 Result of conversion
+	; R6
 
     BL      Read_UART       
 	CMP     R1, #0x0D       ; Enter key (Carriage Return)
@@ -169,7 +175,23 @@ Convert
 	POP 	{R10}
 
 	ADD 	r4,#0
+	; OUT
+	MOV 	R11, R6
+	MOV  	R2, R3
 	
+	EOR 	R1,R1
+	EOR 	R3,R3
+	EOR 	R4,R4
+	EOR 	R5,R5
+	EOR 	R6,R6
+	EOR 	R7,R7
+	EOR 	R8,R8
+	EOR 	R9,R9
+	
+	
+	LDR 	R0, =calc
+	BX 		R0
+
 	
 
 Read_UART
