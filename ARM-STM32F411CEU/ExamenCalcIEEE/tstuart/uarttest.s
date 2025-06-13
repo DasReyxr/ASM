@@ -1,3 +1,11 @@
+; ------ Orlando Reyes ------
+; --------- Auf Das ---------
+; ----- IEEE Calculator -----
+; ---- I date 10/06/2025 ----
+; ---- C date 13/06/2025 ----
+; -------- Variables --------
+; ----------- Main -----------
+
 USART1_BASE      EQU 0x40011000
 USART1_SR        EQU (USART1_BASE + 0x00)
 USART1_DR        EQU (USART1_BASE + 0x04)
