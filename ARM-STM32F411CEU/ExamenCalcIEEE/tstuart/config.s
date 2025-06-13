@@ -78,8 +78,8 @@ __main
 	BL      Config_UART
     EOR     R1,R1
     EOR     R2,R2
-	LDR 	R0,=UART
-	B 		R0
+	LDR 	R15,=UART
+	;BX 		R0
 
 
 

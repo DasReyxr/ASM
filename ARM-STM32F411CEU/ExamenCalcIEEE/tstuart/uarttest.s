@@ -5,9 +5,13 @@
 ; ---- C date 13/06/2025 ----
 ; -------- Variables --------
 ; ----------- Main -----------
-R0	RN R0diezn
-R1	RN R1UART
-
+;R0	RN R0
+;R1	RN R1
+USART1_BASE      EQU 0x40011000
+USART1_SR        EQU (USART1_BASE + 0x00)
+USART1_DR        EQU (USART1_BASE + 0x04)
+USART1_BRR       EQU (USART1_BASE + 0x08)
+USART1_CR1       EQU (USART1_BASE + 0x0C)
 ;r5 flag dot
 	AREA myData, DATA, READWRITE
 		
@@ -20,18 +24,15 @@ FRAC   SPACE 6
 	EXPORT UART
 
 UART
-    BL      Config_RCC
-    BL      Config_GPIO
-	BL 		Config_TIM
-	BL      Config_UART
+
 	MOV     R4, #0          ; Índice
 	MOV 	R5, #0
 	MOV 	R6, #0
 
 LOOP
 	; -- IN --
-	; R1UART  character  from UART
-	; R0diezn  Address General Purpose 
+	; R1  character  from UART
+	; R0  Address General Purpose 
 	; R4 Counter for integer part
 	; R6 Counter for fractional part
 	; R5 Flag for decimal point
@@ -41,17 +42,17 @@ LOOP
 	; R6
 
     BL      Read_UART       
-	CMP     R1UART, #0x0D       ; Enter key (Carriage Return)
+	CMP     R1, #0x0D       ; Enter key (Carriage Return)
     BEQ     CONVERT       
-	CMP 	R1UART, #'.'
+	CMP 	R1, #'.'
 	BEQ		PUNTO
 
 	TST 	R5, #1
 	BNE		SAVE_FRAC
 	; Validation ranges 0-9 Values only
-	CMP     R1UART, #0x30
+	CMP     R1, #0x30
 	BLT     LOOP
-	CMP     R1UART, #0x39
+	CMP     R1, #0x39
 	BGT     LOOP
 
 	B		SAVE_ENT
@@ -62,15 +63,15 @@ LOOP1
 
 SAVE_ENT
 	LDR     R2, =ENTERO 
-    SUB     R1UART, #48   
-    STRB    R1UART, [R2, R4]    
+    SUB     R1, #48   
+    STRB    R1, [R2, R4]    
     ADD     R4, R4, #1      	
 	B       LOOP1
 
 SAVE_FRAC
 	LDR     R2, =FRAC
-	SUB     R1UART, #48   
-    STRB    R1UART, [R2, R6]    
+	SUB     R1, #48   
+    STRB    R1, [R2, R6]    
     ADD     R6, R6, #1      	
 	B       LOOP1
 
@@ -85,24 +86,24 @@ CONVERT
 	ADDS 	R4, #0
 	BEQ		FRACT
 
-	MOV		R1UART, R4  ; Duplicar el valor de R4
-	MOV 	R0diezn, #1	; Valor minimo de la escala
+	MOV		R1, R4  ; Duplicar el valor de R4
+	MOV 	R0, #1	; Valor minimo de la escala
 	MOV 	R10, #10 ; inmediato 10	
 exp10r4 ; 10^R4
-	SUBS 	R1UART, #1
+	SUBS 	R1, #1
 	BEQ		CONV_INT
-	MUL 	R0diezn, R0diezn, R10
+	MUL 	R0, R0, R10
 	B exp10r4
 
 	EOR		R3,R3
 CONV_INT
-	LDRB 	R5,[R2,R1UART]	; Cargar bit de R2 [Entero]
-	MUL 	R5, R5, R0diezn
+	LDRB 	R5,[R2,R1]	; Cargar bit de R2 [Entero]
+	MUL 	R5, R5, R0
 	ADD	  	R3, R5
 	
-	UDIV	R0diezn, R0diezn, R10 ; reducir escalas
-	ADD 	R1UART, #1
-	CMP 	R1UART, R4
+	UDIV	R0, R0, R10 ; reducir escalas
+	ADD 	R1, #1
+	CMP 	R1, R4
 	BNE		CONV_INT
 	
 FRACT
@@ -116,15 +117,15 @@ CleanVector
 	BNE		CleanVector
 	EOR 	R6,R6
 
-	LDR		R1UART,=1000
+	LDR		R1,=1000
 
 Convert
 	LDRB 	R5,[R2,R4]
-	MUL 	R5, R5, R1UART
+	MUL 	R5, R5, R1
 	ADD	  	R6, R5
 	ADD 	R4, #1
 	
-	UDIV	R1UART, R1UART, R10 ; Reduce la escala
+	UDIV	R1, R1, R10 ; Reduce la escala
 	CMP 	R4, #5
 	BNE		Convert
 
@@ -135,7 +136,7 @@ Convert
 	MOV 	R11, R6
 	MOV  	R2, R3
 	
-	EOR 	R1UART,R1
+	EOR 	R1,R1
 	EOR 	R3,R3
 	EOR 	R4,R4
 	EOR 	R5,R5

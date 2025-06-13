@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\tst.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\tst.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Fri Jun 13 13:43:31 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Fri Jun 13 16:09:36 2025
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -12,9 +12,10 @@ Call chain for Maximum Stack Depth:</H3>
 <H3>
 Functions with no stack information
 </H3><UL>
- <LI><a href="#[46]">__user_initial_stackheap</a>
- <LI><a href="#[44]">__main</a>
+ <LI><a href="#[47]">__user_initial_stackheap</a>
+ <LI><a href="#[46]">UART</a>
  <LI><a href="#[45]">calc</a>
+ <LI><a href="#[44]">__main</a>
 </UL>
 </UL>
 <P>
@@ -98,12 +99,13 @@ Function Pointers
  <LI><a href="#[23]">TIM3_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[24]">TIM4_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[32]">TIM5_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
+ <LI><a href="#[46]">UART</a> from uarttest.o(juve3dstudio) referenced from config.o(juve3dstudio)
  <LI><a href="#[2b]">USART1_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[2c]">USART2_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[3d]">USART6_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[5]">UsageFault_Handler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[a]">WWDG_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
- <LI><a href="#[44]">__main</a> from uarttest.o(juve3dstudio) referenced from startup_stm32f411xe.o(.text)
+ <LI><a href="#[44]">__main</a> from config.o(juve3dstudio) referenced from startup_stm32f411xe.o(.text)
  <LI><a href="#[45]">calc</a> from ieecalctest.o(juve3dstudio) referenced from uarttest.o(juve3dstudio)
 </UL>
 <P>
@@ -351,22 +353,25 @@ Global Symbols
 <P><STRONG><a name="[a]"></a>WWDG_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f411xe.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
-<P><STRONG><a name="[46]"></a>__user_initial_stackheap</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_stm32f411xe.o(.text), UNUSED, KEPT)
+<P><STRONG><a name="[47]"></a>__user_initial_stackheap</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_stm32f411xe.o(.text), UNUSED, KEPT)
 
-<P><STRONG><a name="[47]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[48]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
-<P><STRONG><a name="[48]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[49]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
-<P><STRONG><a name="[49]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[4a]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[43]"></a>SystemInit</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, system_stm32f4xx.o(.text.SystemInit))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(.text)
 </UL>
-<P><STRONG><a name="[44]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, uarttest.o(juve3dstudio))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(.text)
+<P><STRONG><a name="[46]"></a>UART</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, uarttest.o(juve3dstudio))
+<BR>[Address Reference Count : 1]<UL><LI> config.o(juve3dstudio)
 </UL>
 <P><STRONG><a name="[45]"></a>calc</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, ieecalctest.o(juve3dstudio))
 <BR>[Address Reference Count : 1]<UL><LI> uarttest.o(juve3dstudio)
+</UL>
+<P><STRONG><a name="[44]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, config.o(juve3dstudio))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(.text)
 </UL><P>
 <H3>
 Local Symbols
