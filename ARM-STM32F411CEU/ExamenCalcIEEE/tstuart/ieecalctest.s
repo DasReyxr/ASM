@@ -27,7 +27,7 @@ Frac1        EQU 2700
 Sign2       EQU 0
 Val2        EQU 0
 Frac2       EQU 10
-Decimal0s   EQU  ;
+Decimal0s   EQU 10000 
 ; SIGN << 32
 ; EXP=158-CLZ(Val)=31-CLZ(Val)+127
 ; EXP <<23
@@ -132,8 +132,8 @@ Integer
     ;CLZ    R3, R2
     RSB    R3, R3, #32 ; numero de digitos
 
-	EOR    R12, R12
-	ADD    R12, R5
+	;EOR    R12, R12
+	MOV    R12, R5
 
     LSR    R5, R3
 

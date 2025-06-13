@@ -63,15 +63,15 @@ LOOP1
 
 SAVE_ENT
 	LDR     R2, =ENTERO 
-    SUB     R1, #48   
-    STRB    R1, [R2, R4]    
+    SUB     R0,R1, #48   
+    STRB    R0, [R2, R4]    
     ADD     R4, R4, #1      	
 	B       LOOP1
 
 SAVE_FRAC
 	LDR     R2, =FRAC
-	SUB     R1, #48   
-    STRB    R1, [R2, R6]    
+	SUB     R0,R1, #48   
+    STRB    R0, [R2, R6]    
     ADD     R6, R6, #1      	
 	B       LOOP1
 
@@ -134,10 +134,9 @@ Convert
 	ADD 	r4,#0
 	; OUT
 	MOV 	R11, R6 ; Fract
-	MOV  	R10, R3
+	MOV  	R2, R3
 	
 	EOR 	R1,R1
-	EOR 	R3,R3
 	EOR 	R4,R4
 	EOR 	R5,R5
 	EOR 	R6,R6
@@ -148,7 +147,7 @@ Convert
 	
 	LDR 	R0, =calc
 	;LDR 	PC,=calc
-	;BX 		R0
+	BX 		R0
 
 	
 
