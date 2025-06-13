@@ -41,6 +41,7 @@ Decimal0s   EQU 10000
 calc
     
 	;Arg of Frac R11 
+    
     BL      Fract
     
     MOV		R3,R2
@@ -133,18 +134,17 @@ Integer
     RSB    R3, R3, #32 ; numero de digitos
 
 	;EOR    R12, R12
-	MOV    R12, R5
+	;MOV    R12, R5
+    ;LSR    R5, R3
 
-    LSR    R5, R3
+	RSB     R3, R3, #32;RSB     R6, R3, #32
 
-	RSB    R6, R3, #32
+    LSL     R2, R3;R6
+    LSR     R2, #9
+    ;ORR     R5, R2
+    ;LSR     R5, #9
 
-    LSL    R2, R6
-    ORR    R5, R2
-
-    LSR     R5, #9
-
-    ORR     R9, R5
+    ORR     R9, R2
 
     BX      LR
 
