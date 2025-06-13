@@ -21,7 +21,7 @@
 ;R9 Midvalue
 Sign1        EQU 0
 Val1         EQU 0
-Frac1        EQU 00003
+Frac1        EQU 5000
 ;Decimal0s   EQU 10000 
 Sign2       EQU 0
 Val2        EQU 0
@@ -73,9 +73,8 @@ __main
     PUSH{R9}
     EOR 	R9,R9	
     BL 		Limpiar
-    EOR  R7,R7
-    POP {R2}
-    POP {R1}
+    EOR     R7,R7
+    POP     {R2,R1}
 
 ciclo
 	b ciclo
@@ -164,15 +163,18 @@ Fract
     ;R5 valor
     LSL  R11,#1
     CMP  R11,R3
-    BLE  Zero
+    BLT  Zero
     ORR  R5,#1
     SUB  R11,R3
     
 Zero
     LSL  R5,#1
     ADD R4, #1
-    CMP  R4,#32
+	ADDS R11,#0
+	BEQ	Multiplode2
+	CMP  R4,#32
 	BLO	Fract
+Multiplode2
 	LSR	 R5,#1
 	
 	;R8 extended
@@ -182,14 +184,17 @@ Zero
 Extended
 	LSL  R11,#1
     CMP  R11,R3
-    BLE  Zero2
+    BLT  Zero2
     ORR  R8,#1
     SUB  R11,R3
     
 Zero2
     LSL  R8,#1
-    SUBS R4, #1
+	ADDS R11,#0
+	BEQ	 Multiplode2dos
+	SUBS R4, #1
     BPL  Extended
+Multiplode2dos
 	LSR	 R8,#1
 	
 
