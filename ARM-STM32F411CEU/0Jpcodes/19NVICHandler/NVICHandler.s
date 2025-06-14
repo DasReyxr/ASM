@@ -75,7 +75,8 @@ ledDelay EQU 6000000
     AREA juve3dstudio,CODE,READONLY
 	ENTRY
     EXPORT TIM2_IRQHandler
-	EXPORT __main
+    EXPORT USART1_IRQHandler
+    EXPORT __main
 __main
     BL      Config_RCC
     BL      Config_GPIO
@@ -191,7 +192,7 @@ Config_UART
     ;Configuramos nuestro uart a una trama de 1 bit start
 	LDR R0,=USART1_CR1
 	LDR R1,[R0]
-	MOVW R2,0x200C ; Otra forma #(1 << 13) | (3<<2)
+	MOVW R2,0x202C ; Otra forma #(1 << 13) | (3<<2)
 	ORR R1, R2 		; #(1 << 13) | (3<<2)
 	STR R1,[R0]
     POP{PC}
@@ -266,6 +267,16 @@ TIM2_IRQHandler
     STR R1, [R0] ; Toggle the state of PC6
     POP{R0-R2,PC}
 
+USART1_IRQHandler
+	PUSH{R0-R2,LR}
+    LDR   R0, =USART1_DR ; Read data register
+    LDR   R1, [R0] ; Read received data
+writeCycle
+    LDR   R1, [R0] ; Read status register
+    TST   R1, #(1<<6) ; Check if TXE is set
+    BEQ   writeCycle ; If not, wait
 
-	align
+    
+    POP{R0-R2,PC}
+    align
 	end

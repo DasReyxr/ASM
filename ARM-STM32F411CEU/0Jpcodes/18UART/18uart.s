@@ -74,7 +74,7 @@ __main
 	BL      Config_UART
 loop
 	;leyendo el ADC
-;    BL      Read_UART
+        BL      Read_UART
     BL      Write_UART
 ; MOV     R1, #'H'
 ;     BL      Write_UART
@@ -103,9 +103,8 @@ loop
 ; 	MOV     R1, #'N'
 ;     BL      Write_UART
 ;     BL      delay
- 	MOV     R1, #0xF4
-     BL      Write_UART
-    
+   ;  BL      Write_UART
+
     B 		loop
     
 Config_RCC
