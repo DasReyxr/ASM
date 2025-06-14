@@ -65,7 +65,9 @@ SAVE_ENT
 	LDR     R2, =ENTERO 
     SUB     R0,R1, #48   
     STRB    R0, [R2, R4]    
-    ADD     R4, R4, #1      	
+    ADD     R4, R4, #1
+	CMP		R4,#10 ; 4294967296
+	BGT		infty      	
 	B       LOOP1
 
 SAVE_FRAC
@@ -75,6 +77,21 @@ SAVE_FRAC
     ADD     R6, R6, #1      	
 	B       LOOP1
 
+
+infty
+	ORR		R5,(1<<10)
+	B		NaN
+NaN
+	; imprimir nan
+	MOV     R1, #'N'
+    BL      Write_UART
+	MOV     R1, #'a'
+    BL      Write_UART
+	MOV     R1, #'N'
+    BL      Write_UART
+
+
+	b 		.
 PUNTO
 	ORR 	R5, #1
 	B       LOOP1
@@ -122,7 +139,8 @@ CleanVector
 Convert
 	LDRB 	R5,[R2,R4]
 	MUL 	R5, R5, R1
-	ADD	  	R6, R5
+	ADDS	R6, R5
+	BVS		infty
 	ADD 	R4, #1
 	
 	UDIV	R1, R1, R10 ; Reduce la escala
