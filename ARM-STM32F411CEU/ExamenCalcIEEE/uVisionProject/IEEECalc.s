@@ -20,8 +20,8 @@
 
 ;R9 Midvalue
 Sign1        EQU 0
-Val1         EQU 0
-Frac1        EQU 5000
+Val1         EQU 1278
+Frac1        EQU 00003
 ;Decimal0s   EQU 10000 
 Sign2       EQU 0
 Val2        EQU 0
@@ -96,7 +96,7 @@ Exponente
     BX      LR
 
 ZeroExp 	
-	POP{LR}
+	PUSH{LR}
 	LSL     R9, R7, #31   ;Signo 
 	
 	CMP		R11, #0	
@@ -120,8 +120,7 @@ ZeroExp
 	ORR		R9, R12
 	CMP		R4,#10
 	BLHI	ExtendedPrecision
-	
-	BX LR
+	POP{PC}
 
 ExtendedPrecision
 	push{lr}
