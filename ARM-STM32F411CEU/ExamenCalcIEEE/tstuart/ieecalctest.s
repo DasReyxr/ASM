@@ -6,6 +6,7 @@
 ; -------- Variables --------
 ; ----------- Main -----------
 ; ---- Registers Used ----
+; ---- Registers Used ----
 ;
 ; Global Registers
 ; R3 IEEE Result
@@ -21,13 +22,13 @@
 
 ;R9 Midvalue
 Sign1        EQU 0
-Val1         EQU 125
-Frac1        EQU 2700
+Val1         EQU 1278
+Frac1        EQU 00003
 ;Decimal0s   EQU 10000 
 Sign2       EQU 0
 Val2        EQU 0
 Frac2       EQU 10
-Decimal0s   EQU 10000 
+Decimal0s   EQU 10000 ;
 ; SIGN << 32
 ; EXP=158-CLZ(Val)=31-CLZ(Val)+127
 ; EXP <<23
@@ -41,6 +42,7 @@ Decimal0s   EQU 10000
 calc
     
 	;Arg of Frac R11 
+    EOR  R4,R4
     
     BL      Fract
     
@@ -59,14 +61,25 @@ calc
     PUSH{R9}
     EOR 	R9,R9
     BL 		Limpiar
-    ; aqui se tiene q ir de retache    
-    
-    
+
+    EOR     R2, R2
+
+    LDR     R11, =Frac2
+    LDR     R3, =Decimal0s
+    BL      Fract
+
+    LDR     R2, =Val2
+    BL      Integer
+    LDR     R2,=Val2
+    BL      Exponente	
+    LDR     R7,=Sign2
+    BL      Signo	
     PUSH{R9}
-    
+    EOR 	R9,R9	
     BL 		Limpiar
-    POP     {R11,R12} ; Final Values
- 
+    EOR     R7,R7
+    POP     {R2,R1}
+
 ciclo
 	b ciclo
 
@@ -76,7 +89,6 @@ Signo
     BX      LR
 
 Exponente
-    ; arg r2 integer
     PUSH{LR}
     CMP     R2, #0
     BLEQ	ZeroVal
@@ -88,7 +100,7 @@ Exponente
     BX      LR
 
 ZeroVal 	
-	POP{LR}
+	PUSH{LR}
 	LSL     R9, R7, #31   ;Signo se podria hacer tambien asi xd
 	
 	CMP		R11, #0	
@@ -112,8 +124,7 @@ ZeroVal
 	ORR		R9, R12
 	CMP		R4,#10
 	BLHI	ExtendedPrecision
-	
-	BX LR
+	POP{PC}
 
 ExtendedPrecision
 	push{lr}
@@ -123,7 +134,6 @@ ExtendedPrecision
 	pop{pc}
 
 Integer
-    ; Arg R2
     CLZ    R3, R2
     ADD    R3, #1
     
@@ -133,27 +143,28 @@ Integer
     ;CLZ    R3, R2
     RSB    R3, R3, #32 ; numero de digitos
 
-	;EOR    R12, R12
-	;MOV    R12, R5
-    ;LSR    R5, R3
+	EOR    R12, R12
+	ADD    R12, R5
 
-	RSB     R3, R3, #32;RSB     R6, R3, #32
+    LSR    R5, R3
 
-    LSL     R2, R3;R6
-    LSR     R2, #9
-    ;ORR     R5, R2
-    ;LSR     R5, #9
+	RSB    R6, R3, #32
 
-    ORR     R9, R2
+    LSL    R2, R6
+    ORR    R5, R2
+
+    LSR     R5, #9
+
+    ORR     R9, R5
 
     BX      LR
 
 Fract
 	EOR  R9,R9
     ;R2 valor fraccionario
-    ;R3 Presicion
+    ;R3 Presiocion
     ;R5 valor
-    LDR     R3, =Decimal0s
+	LDR  R3,=Decimal0s
     LSL  R11,#1
     CMP  R11,R3
     BLT  Zero
