@@ -14,7 +14,8 @@ USART1_BRR       EQU (USART1_BASE + 0x08)
 USART1_CR1       EQU (USART1_BASE + 0x0C)
 ;r5 flag dot
 	AREA myData, DATA, READWRITE
-		
+welcome DCB "Hi Sir Das, please enter your first number", 0
+	
 ENTERO SPACE 10
 FRAC   SPACE 6
 
@@ -24,6 +25,8 @@ FRAC   SPACE 6
 	EXPORT UART
 
 UART
+	LDR 	R10,=welcome
+	BL DecomposeString
 
 	MOV     R4, #0          ; Índice
 	MOV 	R5, #0
@@ -192,6 +195,15 @@ writeCycle
     BEQ   writeCycle ; If not, wait
     
     POP{PC}
+
+DecomposeString
+	PUSH{R1,R2,LR}
+	LDRB R1, [R10,R2]
+	ADD R2, #1
+	CMP R1, #0
+	BLNE 	Write_UART
+	
+	POP{R1,R2,PC}
 
 
 
