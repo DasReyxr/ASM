@@ -46,7 +46,8 @@ ciclo
     BLGT    Intg1
     BLLS     Intg2
     MOV		R1,Rint
-	BL  Write_UART
+    MOV R2, #0         ; Bandera de entero
+    BL PrintNumber
     ; Fraccionario 	
     
     ADD     RExp,#1
@@ -61,7 +62,10 @@ ciclo
     ORR     Rhigh,Rlow
     MOV     R1, Rhigh
     ADD		R1,#1
-    BL  Write_UART
+    MOV     R1, Rhigh      ; Valor fraccionario (ej: 2500 para 0.25)
+    MOV     R2, #1         ; Bandera de fracción
+    BL      PrintNumber
+
     B       ciclo
 Intg1
     PUSH {LR}
@@ -101,6 +105,86 @@ ZeroInt
     ADD		R1,#1
     B       ciclo    
     
+; Función unificada para enteros y fracciones
+; Parámetros:
+;   R1 = valor numérico
+;   R2 = bandera (0=entero, 1=fracción)
+PrintNumber
+    PUSH {LR, R4-R7}
+    
+    ; Primero determinar si es entero o fracción
+    CMP R2, #1
+    BNE print_integer
+    
+    ; Si es fracción, imprimir punto primero
+    MOV R0, #'.'
+    BL Write_UART
+    B start_conversion
+    
+print_integer
+    ; Para enteros, verificar si es negativo (bit 31)
+    TST R1, #0x80000000
+    BEQ start_conversion
+    ; Si es negativo, imprimir signo y convertir a positivo
+    MOV R0, #'-'
+    BL Write_UART
+    RSB R1, R1, #0
+    
+start_conversion
+    MOV R4, #10         ; divisor
+    EOR R5, R5          ; contador de dígitos
+    MOV R6, R1          ; copia del valor
+    EOR R7, R7          ; flag de dígitos significativos
+    
+    ; Caso especial para cero
+    ADDS R6, #0
+    BNE conversion_loop
+    MOV R0, #'0'
+    BL Write_UART
+    B print_end
+    
+conversion_loop
+    UDIV    R0, R6, R4     ; dividir por 10
+    MLS     R3, R0, R4, R6  ; obtener residuo (dígito)
+    PUSH    {R3}           ; guardar dígito
+    ADD     R5, R5, #1      ; incrementar contador
+    MOV     R6, R0          ; actualizar cociente
+    ADDS    R6, #0          ; ¿terminamos?
+    BNE     conversion_loop
+    
+send_digits
+    POP {R0}            ; recuperar dígito
+    CMP     R7, #0          ; ¿ya encontramos dígito significativo?
+    BNE     print_digit     ; si sí, imprimir todos
+    
+    ADDS    R0, #0          ; ¿es cero no significativo?
+    BEQ     skip_digit      ; si sí, saltar
+    
+print_digit
+    MOV     R7, #1          ; marcar dígito significativo encontrado
+    ADD     R0, #0x30    ; convertir a ASCII
+    BL      Write_UART
+    
+skip_digit
+    SUBS    R5, R5, #1     ; decrementar contador
+    BNE     send_digits
+    
+    ; Si todos eran ceros (solo para fracciones)
+    CMP     R7, #0
+    BNE     print_end
+    MOV     R0, #'0'
+    BL  Write_UART
+    
+print_end
+    ; Solo agregar espacio si es entero
+    CMP     R2, #1
+    BEQ     end_function
+    MOV     R0, #' '
+    BL      Write_UART
+    
+end_function
+    POP {LR, R4-R7}
+    BX LR
 
 Write_UART
     PUSH{LR}
