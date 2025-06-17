@@ -50,6 +50,9 @@ LOOP
     BEQ     CONVERT       
 	CMP 	R1, #'.'
 	BEQ		PUNTO
+	CMP 	R1, #'-'
+	BEQ		NIG
+	
 
 	TST 	R5, #1
 	BNE		SAVE_FRAC
@@ -96,6 +99,13 @@ NaN
 
 
 	b 		.
+NIG
+	TST		R7,(1<<0) ; and 1 con 1 si no es igual = segundo numero
+	ITE 	NE
+	ORRNE		R7,(1<<2) ; - sign
+	ORREQ		R7,(1<<1) ; - sign
+	
+	B LOOP1
 PUNTO
 	ORR 	R5, #1
 	B       LOOP1
@@ -170,7 +180,7 @@ Convert
 	EOR 	R9,R9
 	
 	; Aqui vas a poner avr si se regresa donde mismo o ne
-	TST 	R7,(1<<2)
+	TST 	R7,(1<<0)
 	BNE		JALAMELASPATAS	 	
 	LDR 	R15, =calc
 	

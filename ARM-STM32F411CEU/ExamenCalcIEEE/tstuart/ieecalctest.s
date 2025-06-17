@@ -57,34 +57,37 @@ calc
    ; Arg of Exp R2
     BL      Exponente
 
-    LDR     R7,=Sign1
-    BL      Signo
+    PUSH {R2}
+    AND     R2,R7,#(1<<2)    
+    LSL     R9, R2, #29   ;31-2
+	POP {R2}
 
     PUSH{R9}
     EOR 	R9,R9
     BL 		Limpiar
 	; aqui activaras una bandera pa q se regrese pa aca
-	LDR     R7,=(1<<2)
+	ORR     R7,=(1<<0)
     LDR		R15,=UART
     EOR     R2, R2
 
 JALAMELASPATAS
  
 	LDR		R4,=31
-;    LDR     R11, =Frac1
- ;   LDR     R3, =Decimal0s
     BL      Fract
 
-  ;  LDR     R2, =Val1
     MOV		R3,R2
 	PUSH{R3}
    
 	BL      Integer
 	POP{R2}
-   ; LDR     R2,=Val1
     BL      Exponente	
-    LDR     R7,=Sign1
-    BL      Signo	
+
+    PUSH {R2}
+    AND     R2,R7,#(1<<1)    
+    LSL     R9, R2, #30   ;31-2
+	POP {R2}
+
+
     PUSH{R9}
     EOR 	R9,R9	
     BL 		Limpiar
@@ -92,26 +95,19 @@ JALAMELASPATAS
     POP     {R1,R0}
 	LDR		R15,=ALU
 	
-
-Signo
-    LSL     R7, #31   
-	ORR 	R9, R7
-    BX      LR
-
 Exponente
     PUSH{LR}
     ADDS    R2, #0
     BLEQ	ZeroVal
     CLZ     R3, R2
     RSB     R3, #158
-    LSL     R3, #23
-    ORR     R9,R3
+    LSL     R9,R3, #23
     POP{LR}
     BX      LR
 
 ZeroVal 	
 	POP{LR}
-	LSL     R9, R7, #31   ;Signo se podria hacer tambien asi xd
+	;LSL     R9, R7, #31   ;Signo se podria hacer tambien asi xd
 	
 	CMP		R11, #0	
 	BXEQ	LR
