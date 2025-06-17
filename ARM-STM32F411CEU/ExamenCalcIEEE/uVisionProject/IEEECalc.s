@@ -1,11 +1,9 @@
-; ------ Orlando Reyes ------
-; --------- Auf Das ---------
-; ----- Floating Point  -----
-; ---- I date 23/05/2025 ----
-; ---- C date 13/06/2025 ----
-; -------- Variables --------
-; ----------- Main -----------
-; ---- Registers Used ----
+; -------------- Iker | Das -----------
+; ------------ Floating Point ------------
+; ------------- 23/05/2025 ------------
+; ------------- Variables -------------
+; ---------------- Main ---------------
+
 ; ---- Registers Used ----
 ;
 ; Global Registers
@@ -22,8 +20,8 @@
 
 ;R9 Midvalue
 Sign1        EQU 0
-Val1         EQU 1278
-Frac1        EQU 00003
+Val1         EQU 23
+Frac1        EQU 5000
 ;Decimal0s   EQU 10000 
 Sign2       EQU 0
 Val2        EQU 0
@@ -43,6 +41,7 @@ Decimal0s   EQU 10000 ;
 __main
     EOR     R2, R2
 
+    LDR     R4,=31
     LDR     R11, =Frac1
     LDR     R3, =Decimal0s
     BL      Fract
@@ -64,6 +63,7 @@ __main
 
     LDR     R11, =Frac2
     LDR     R3, =Decimal0s
+    LDR     R4,=31
     BL      Fract
 
     LDR     R2, =Val2
@@ -170,13 +170,9 @@ Fract
     
 Zero
     LSL  R5,#1
-    ADD R4, #1
-	ADDS R11,#0
-	BEQ	Multiplode2
-	CMP  R4,#32
-	BLO	Fract
-Multiplode2
-	LSR	 R5,#1
+    SUBS     R4, #1
+    BNE      Fract
+	;LSR	 R5,#1
 	
 	;R8 extended
 	LDR  R4,=7
@@ -191,12 +187,9 @@ Extended
     
 Zero2
     LSL  R8,#1
-	ADDS R11,#0
-	BEQ	 Multiplode2dos
 	SUBS R4, #1
     BPL  Extended
-Multiplode2dos
-	LSR	 R8,#1
+	;LSR	 R8,#1
 	
 
 	

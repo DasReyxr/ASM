@@ -7,6 +7,7 @@
 ; ----------- Main -----------
 ;R0	RN R0
 ;R1	RN R1
+;R7
 USART1_BASE      EQU 0x40011000
 USART1_SR        EQU (USART1_BASE + 0x00)
 USART1_DR        EQU (USART1_BASE + 0x04)
@@ -14,14 +15,14 @@ USART1_BRR       EQU (USART1_BASE + 0x08)
 USART1_CR1       EQU (USART1_BASE + 0x0C)
 ;r5 flag dot
 	AREA myData, DATA, READWRITE
-welcome DCB "Hi Sir Das, please enter your first number", 0
 	
 ENTERO SPACE 10
 FRAC   SPACE 6
 
     AREA juve3dstudio,CODE,READONLY
-	ENTRY
+	;ENTRY
 	IMPORT calc
+	IMPORT JALAMELASPATAS
 	EXPORT UART
 
 UART
@@ -156,19 +157,23 @@ Convert
 	; OUT
 	MOV 	R11, R6 ; Fract
 	MOV  	R2, R3
-	
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
 	EOR 	R1,R1
 	EOR 	R4,R4
 	EOR 	R5,R5
 	EOR 	R6,R6
-	EOR 	R7,R7
 	EOR 	R8,R8
 	EOR 	R9,R9
 	
+	; Aqui vas a poner avr si se regresa donde mismo o ne
+	TST 	R7,(1<<2)
+	BNE		JALAMELASPATAS	 	
+	LDR 	R15, =calc
 	
-	LDR 	R0, =calc
-	;LDR 	PC,=calc
-	BX 		R0
 
 	
 
@@ -198,14 +203,19 @@ writeCycle
 
 DecomposeString
 	PUSH{R1,R2,LR}
+loopString
 	LDRB R1, [R10,R2]
 	ADD R2, #1
 	CMP R1, #0
-	BLNE 	Write_UART
+	BNE StringWrite
 	
 	POP{R1,R2,PC}
 
+StringWrite
 
+	bl Write_UART
+	b loopString
+welcome DCB "Enter Number:", 0x0D,0x0A,0
 
 	align
 	end
