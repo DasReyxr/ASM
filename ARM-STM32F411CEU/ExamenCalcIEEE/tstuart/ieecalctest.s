@@ -58,15 +58,16 @@ calc
     BL      Exponente
 
     PUSH {R2}
-    AND     R2,R7,#(1<<2)    
-    LSL     R9, R2, #29   ;31-2
+    AND     R2,R7,#(1<<1)    
+    LSL     R2, #30   ;31-2
+	ORR		R9,R2
 	POP {R2}
 
     PUSH{R9}
     EOR 	R9,R9
     BL 		Limpiar
 	; aqui activaras una bandera pa q se regrese pa aca
-	ORR     R7,=(1<<0)
+	ORR     R7,#(1<<0)
     LDR		R15,=UART
     EOR     R2, R2
 
@@ -83,8 +84,9 @@ JALAMELASPATAS
     BL      Exponente	
 
     PUSH {R2}
-    AND     R2,R7,#(1<<1)    
-    LSL     R9, R2, #30   ;31-2
+    AND     R2,R7,#(1<<2)    
+    LSL      R2, #29   ;31-2
+	ORR		R9,R2
 	POP {R2}
 
 
