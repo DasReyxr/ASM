@@ -103,7 +103,8 @@ Exponente
     BLEQ	ZeroVal
     CLZ     R3, R2
     RSB     R3, #158
-    LSL     R9,R3, #23
+    LSL     R3, #23
+    ORR     R9,R3
     POP{LR}
     BX      LR
 

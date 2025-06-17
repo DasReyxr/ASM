@@ -185,7 +185,7 @@ Reg4MenorReg1Neg
 	
 SumaMantisaDirecta
 	PUSH{R7}
-	LDR R7, =0x007FFFFF
+	LDR R7, =0x4F800000
 
 	CMP R4, R7
 	BEQ NumeroMaximoR4
