@@ -61,12 +61,15 @@ ciclo
 	LSR		Rlow,#24
     ORR     Rhigh,Rlow
     MOV     R1, Rhigh
-    ADD		R1,#1
-    MOV     R1, Rhigh      ; Valor fraccionario (ej: 2500 para 0.25)
+	ADDS 	R1,#0
+	ITE		NE
+    ADDNE	R1,#1
+    ADDEQ	R1,#0
+	;MOV     R1, Rhigh      ; Valor fraccionario (ej: 2500 para 0.25)
     MOV     R2, #1         ; Bandera de fracción
     BL      PrintNumber
 
-    B       ciclo
+    B       .
 Intg1
     PUSH {LR}
     SUB Rshift,RExp,#23; Exp-22
@@ -103,7 +106,13 @@ ZeroInt
     ORR     Rhigh,Rlow
     MOV     R1, Rhigh
     ADD		R1,#1
-    B       ciclo    
+	
+		MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+    B       .    
     
 ; Función unificada para enteros y fracciones
 ; Parámetros:
@@ -117,10 +126,15 @@ PrintNumber
     BNE print_integer
     
     ; Si es fracción, imprimir punto primero
-    MOV R0, #'.'
+    PUSH{R1}
+	MOV R1, #'.'
     BL Write_UART
-    B start_conversion
-    
+    POP{R1}
+	ADDS	R1,#0
+	BNE start_conversion
+    LDR R1,=0x30
+	BL Write_UART
+    B end_function
 print_integer
     ; Para enteros, verificar si es negativo (bit 31)
     TST R1, #0x80000000
@@ -163,7 +177,8 @@ send_digits
 print_digit
     MOV     R7, #1          ; marcar dígito significativo encontrado
     ADD     R0, #0x30    ; convertir a ASCII
-    BL      Write_UART
+    MOV		R1,R0
+	BL      Write_UART
     
 skip_digit
     SUBS    R5, R5, #1     ; decrementar contador
@@ -173,14 +188,11 @@ skip_digit
     CMP     R7, #0
     BNE     print_end
     MOV     R0, #'0'
+	MOV		R1,R0
     BL  Write_UART
     
 print_end
     ; Solo agregar espacio si es entero
-    CMP     R2, #1
-    BEQ     end_function
-    MOV     R0, #' '
-    BL      Write_UART
     
 end_function
     POP {LR, R4-R7}
