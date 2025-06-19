@@ -173,7 +173,8 @@ Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
         IMPORT  SystemInit
         IMPORT  __main
-
+		IMPORT USART1_IRQHandler
+		IMPORT TIM2_IRQHandler
                  LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main
@@ -250,7 +251,7 @@ Default_Handler PROC
                 EXPORT  TIM1_UP_TIM10_IRQHandler          [WEAK]                
                 EXPORT  TIM1_TRG_COM_TIM11_IRQHandler     [WEAK] 
                 EXPORT  TIM1_CC_IRQHandler                [WEAK]                                   
-                EXPORT  TIM2_IRQHandler                   [WEAK]                                            
+                ;EXPORT  TIM2_IRQHandler                   [WEAK]                                            
                 EXPORT  TIM3_IRQHandler                   [WEAK]                                            
                 EXPORT  TIM4_IRQHandler                   [WEAK]                                            
                 EXPORT  I2C1_EV_IRQHandler                [WEAK]                                             
@@ -259,7 +260,7 @@ Default_Handler PROC
                 EXPORT  I2C2_ER_IRQHandler                [WEAK]                                               
                 EXPORT  SPI1_IRQHandler                   [WEAK]                                           
                 EXPORT  SPI2_IRQHandler                   [WEAK]                                            
-                EXPORT  USART1_IRQHandler                 [WEAK]                                          
+                ;EXPORT  USART1_IRQHandler                 [WEAK]                                          
                 EXPORT  USART2_IRQHandler                 [WEAK]                                                                                  
                 EXPORT  EXTI15_10_IRQHandler              [WEAK]                                  
                 EXPORT  RTC_Alarm_IRQHandler              [WEAK]                  
@@ -308,7 +309,7 @@ TIM1_BRK_TIM9_IRQHandler
 TIM1_UP_TIM10_IRQHandler                      
 TIM1_TRG_COM_TIM11_IRQHandler  
 TIM1_CC_IRQHandler                                               
-TIM2_IRQHandler                                                           
+;TIM2_IRQHandler                                                           
 TIM3_IRQHandler                                                           
 TIM4_IRQHandler                                                           
 I2C1_EV_IRQHandler                                                         
@@ -317,7 +318,8 @@ I2C2_EV_IRQHandler
 I2C2_ER_IRQHandler                                                           
 SPI1_IRQHandler                                                          
 SPI2_IRQHandler                                                           
-USART1_IRQHandler                                                       
+;USART1_IRQHandler  
+	
 USART2_IRQHandler                                                                                                           
 EXTI15_10_IRQHandler                                            
 RTC_Alarm_IRQHandler                            

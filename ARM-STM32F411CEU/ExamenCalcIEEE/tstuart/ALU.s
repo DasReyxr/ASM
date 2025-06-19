@@ -1,10 +1,17 @@
 	AREA myData, DATA, READWRITE
 
+USART1_BASE      EQU 0x40011000
+USART1_SR        EQU (USART1_BASE + 0x00)
+USART1_DR        EQU (USART1_BASE + 0x04)
+USART1_BRR       EQU (USART1_BASE + 0x08)
+USART1_CR1       EQU (USART1_BASE + 0x0C)
+
 EXP1 EQU 0x46202000; 10248
 EXP2 EQU 0xBF800000 ; -1
 
     AREA myCode, CODE, READONLY
     IMPORT OUT
+	IMPORT UART
 	EXPORT ALU
 
 ALU
@@ -192,22 +199,14 @@ SumaMantisaDirecta
 	CMP R5, R7
 	BEQ NumeroMaximoR4
 	
+
 	ADD R4, R5
 	POP {R7}
 	CMP R4, #0
 	BEQ Final
 	B	AcomodoMantisa
 	
-NumeroMaximoR4
-	MOV R4, #0x7FFFFFFF
-	POP {R7}
-	B ComparacionSigno
 
-NumeroMaximoR5
-	MOV R4, #0x7FFFFFFF
-	POP {R7}
-	B ComparacionSigno
-	
 AcomodoMantisa
 	;Contar ceros
 	EOR R12,R12
@@ -239,6 +238,7 @@ ComparacionSigno
 	CMP R7, #2
 	BNE CargaSigno
 	ADD R6, #1
+	
 
 CargaSigno
 	;Signo
@@ -268,5 +268,27 @@ Limpiar
 	BX LR
 
 ciclo B ciclo 
+Write_UART
+    PUSH{LR}
+    LDR    R0, =USART1_DR
+    STR    R1, [R0] ; Write data to transmit register
+    LDR    R0, =USART1_SR
+writeCycle
+    LDR   R1, [R0] ; Read status register
+    TST   R1, #(1<<6) ; Check if TXE is set
+    BEQ   writeCycle ; If not, wait
+    
+    POP{PC}
+MENOS
+	MOV 	R1, #'-'
+    BL 		Write_UART
+	
+NumeroMaximoR4
+	B ComparacionSigno
 
+NumeroMaximoR5
+	B ComparacionSigno
+
+
+	ALIGN
     END

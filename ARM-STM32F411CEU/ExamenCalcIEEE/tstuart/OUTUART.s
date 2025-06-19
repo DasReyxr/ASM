@@ -19,7 +19,7 @@ Rlow    RN 4
 Rhigh   RN 5
 	AREA data, DATA, READWRITE
 	AREA juve3dstudio,CODE,READONLY
-	
+	IMPORT UART
 	EXPORT OUT
 
 ; R10 IEEE Result
@@ -34,6 +34,11 @@ ciclo
 	LSL 	RExp,R10,#1 ; Shift left to remove sign bit
 	LSR 	RExp,#24 ;
     
+	CMP		R10,#0x4F800000
+	BEQ		Infty
+	CMP		R10,#0xCF800000
+	BEQ		Infty
+
     TST 	R10,#(1<<30) ; Check MSB of EXP 
     BEQ     ZeroInt     ; if Exp <128
     SUB     RExp,#127 ; If Exp>=128 Exp-127
@@ -51,10 +56,12 @@ ciclo
     ; Fraccionario 	
     
     ADD     RExp,#1
-    LSL     RMant,RExp
-    	
-    LDR     R2,=0x00FFFFFF
-    AND     RMant, RMant, R2
+	RSB		RExp,#31;32-Rexp
+    ;LSL		RMant,#8
+	LSL     RMant,RExp
+	
+;    LDR     R2,=0x00FFFFFF
+;    AND     RMant, RMant, R2
     LDR     R2,=0x2710
     UMULL   Rlow, Rhigh, RMant, R2      ; 64-bit result in Rhigh:Rlow
     LSL     Rhigh,#8
@@ -66,10 +73,25 @@ ciclo
     ADDNE	R1,#1
     ADDEQ	R1,#0
 	;MOV     R1, Rhigh      ; Valor fraccionario (ej: 2500 para 0.25)
-    MOV     R2, #1         ; Bandera de fracción
+    ORR     R2, #1         ; Bandera de fracción
     BL      PrintNumber
+		MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+	BL 		LIMPIAR
+	LDR		R15,=UART
+    BL 		LIMPIAR
 
-    B       .
+
+Infty
+	MOV R1, #'I'
+    BL Write_UART
+	MOV R1, #'n'
+    BL Write_UART
+	MOV R1, #'f'
+    BL Write_UART
+	B	FINAL
 Intg1
     PUSH {LR}
     SUB Rshift,RExp,#23; Exp-22
@@ -92,9 +114,11 @@ ZeroInt
     RSB   RExp,#127  ; If Exp< 128 127-EXP 
     LDR     R1,=0x007FFFFF; Mask for Mantissa    
     AND     RMant,R10,R1 ; Extract Mantissa
-	ORR     RMant,#(1<<23)
+	ADDS	RMant,#0
+	BEQ		escerowe
+    ORR     RMant,#(1<<23)
     
-    EOR     Rint,Rint
+	EOR     Rint,Rint
 
     SUB     RExp,#1
     LSR     RMant,RExp
@@ -106,14 +130,19 @@ ZeroInt
     ORR     Rhigh,Rlow
     MOV     R1, Rhigh
     ADD		R1,#1
-	
+FINAL
 		MOV     R1, #0x0D
     BL      Write_UART
 	MOV     R1, #0x0A
     BL      Write_UART
+	BL 		LIMPIAR
 
-    B       .    
-    
+	LDR		R15,=UART
+
+escerowe
+	MOV     R1, #0x30
+    BL      Write_UART
+	B		FINAL
 ; Función unificada para enteros y fracciones
 ; Parámetros:
 ;   R1 = valor numérico
@@ -131,10 +160,33 @@ PrintNumber
     BL Write_UART
     POP{R1}
 	ADDS	R1,#0
-	BNE start_conversion
+	BNE convert_fraction
     LDR R1,=0x30
 	BL Write_UART
     B end_function
+convert_fraction
+    ; Configurar parámetros para 4 dígitos
+    MOV R4, #10000       ; divisor inicial (para 4 dígitos)
+    MOV R5, #4          ; contador de dígitos
+    MOV R6, R1          ; copia del valor
+    MOV	R10,#10
+fract_loop
+    ; Obtener dígito más significativo
+    UDIV R1, R6, R4     ; R0 = dígito actual
+    MLS R6, R1, R4, R6  ; R6 = resto
+    
+    ; Convertir a ASCII y enviar
+    ADD R1, R1, #'0'
+    BL Write_UART
+    
+    ; Preparar para siguiente dígito
+    UDIV R4, R4, R10    ; reducir divisor
+    SUBS R5, R5, #1     ; decrementar contador
+    BNE fract_loop
+    
+fract_end
+    POP {LR, R4-R7}
+    BX LR
 print_integer
     ; Para enteros, verificar si es negativo (bit 31)
     TST R1, #0x80000000
@@ -153,9 +205,11 @@ start_conversion
     ; Caso especial para cero
     ADDS R6, #0
     BNE conversion_loop
-    MOV R0, #'0'
+    MOV R1, #'0'
     BL Write_UART
     B print_end
+
+    
     
 conversion_loop
     UDIV    R0, R6, R4     ; dividir por 10
@@ -209,6 +263,20 @@ writeCycle
     BEQ   writeCycle ; If not, wait
     
     POP{PC}
+LIMPIAR
+	EOR	 R1,R1
+	EOR  R2,R2
+	EOR  R3,R3
+	EOR  R4,R4
+	EOR  R5,R5
+	EOR  R6,R6
+	EOR  R7,R7
+	EOR  R8,R8
+	EOR  R9,R9
+	EOR  R10,R10
+	EOR  R11,R11
+	EOR  R12,R12
+	BX LR
 
     align
 	end

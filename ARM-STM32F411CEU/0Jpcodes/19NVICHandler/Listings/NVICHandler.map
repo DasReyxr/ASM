@@ -4,22 +4,15 @@ Component: Arm Compiler for Embedded 6.22 Tool: armlink [5ee90200]
 
 Section Cross References
 
-    uarttest.o(juve3dstudio) refers to ieecalctest.o(juve3dstudio) for SEGUNDOVALOR
-    uarttest.o(juve3dstudio) refers to uarttest.o(myData) for ENTERO
-    ieecalctest.o(juve3dstudio) refers to uarttest.o(juve3dstudio) for UART
-    ieecalctest.o(juve3dstudio) refers to alu.o(myCode) for ALU
-    config.o(juve3dstudio) refers to uarttest.o(juve3dstudio) for UART
-    alu.o(myData) refers (Special) to uarttest.o(juve3dstudio) for UART
-    alu.o(myCode) refers (Special) to uarttest.o(juve3dstudio) for UART
-    alu.o(myCode) refers to outuart.o(juve3dstudio) for OUT
     startup_stm32f411xe.o(STACK) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f411xe.o(HEAP) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f411xe.o(RESET) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f411xe.o(RESET) refers to startup_stm32f411xe.o(STACK) for __initial_sp
     startup_stm32f411xe.o(RESET) refers to startup_stm32f411xe.o(.text) for Reset_Handler
+    startup_stm32f411xe.o(RESET) refers to nvichandler.o(juve3dstudio) for TIM2_IRQHandler
     startup_stm32f411xe.o(.text) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f411xe.o(.text) refers to system_stm32f4xx.o(.text.SystemInit) for SystemInit
-    startup_stm32f411xe.o(.text) refers to config.o(juve3dstudio) for __main
+    startup_stm32f411xe.o(.text) refers to nvichandler.o(juve3dstudio) for __main
     startup_stm32f411xe.o(.text) refers to startup_stm32f411xe.o(HEAP) for Heap_Mem
     startup_stm32f411xe.o(.text) refers to startup_stm32f411xe.o(STACK) for Stack_Mem
     system_stm32f4xx.o(.ARM.exidx.text.SystemInit) refers to system_stm32f4xx.o(.text.SystemInit) for [Anonymous Symbol]
@@ -32,10 +25,7 @@ Section Cross References
 
 Removing Unused input sections from the image.
 
-    Removing ieecalctest.o(data), (0 bytes).
-    Removing config.o(myData), (16 bytes).
-    Removing alu.o(myData), (0 bytes).
-    Removing outuart.o(data), (0 bytes).
+    Removing nvichandler.o(data), (0 bytes).
     Removing system_stm32f4xx.o(.text), (0 bytes).
     Removing system_stm32f4xx.o(.ARM.exidx.text.SystemInit), (8 bytes).
     Removing system_stm32f4xx.o(.text.SystemCoreClockUpdate), (302 bytes).
@@ -44,7 +34,7 @@ Removing Unused input sections from the image.
     Removing system_stm32f4xx.o(.rodata.AHBPrescTable), (16 bytes).
     Removing system_stm32f4xx.o(.rodata.APBPrescTable), (8 bytes).
 
-11 unused section(s) (total 362 bytes) removed from the image.
+8 unused section(s) (total 346 bytes) removed from the image.
 
 ==============================================================================
 
@@ -55,38 +45,22 @@ Image Symbol Table
     Symbol Name                              Value     Ov Type        Size  Object(Section)
 
     ../clib/heapaux.c                        0x00000000   Number         0  heapauxi.o ABSOLUTE
-    ALU.s                                    0x00000000   Number         0  alu.o ABSOLUTE
-    OUTUART.s                                0x00000000   Number         0  outuart.o ABSOLUTE
+    NVICHandler.s                            0x00000000   Number         0  nvichandler.o ABSOLUTE
     RTE/Device/STM32F411CEUx/startup_stm32f411xe.s 0x00000000   Number         0  startup_stm32f411xe.o ABSOLUTE
-    config.s                                 0x00000000   Number         0  config.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
-    ieecalctest.s                            0x00000000   Number         0  ieecalctest.o ABSOLUTE
     system_stm32f4xx.c                       0x00000000   Number         0  system_stm32f4xx.o ABSOLUTE
-    uarttest.s                               0x00000000   Number         0  uarttest.o ABSOLUTE
     RESET                                    0x08000000   Section      408  startup_stm32f411xe.o(RESET)
     $v0                                      0x08000198   Number         0  startup_stm32f411xe.o(.text)
     .text                                    0x08000198   Section       64  startup_stm32f411xe.o(.text)
     .text                                    0x080001d8   Section        0  heapauxi.o(.text)
     [Anonymous Symbol]                       0x080001e0   Section        0  system_stm32f4xx.o(.text.SystemInit)
-    $v0                                      0x080001f4   Number         0  uarttest.o(juve3dstudio)
-    juve3dstudio                             0x080001f4   Section      628  uarttest.o(juve3dstudio)
-    welcome                                  0x08000408   Data          16  uarttest.o(juve3dstudio)
-    $v0                                      0x08000468   Number         0  ieecalctest.o(juve3dstudio)
-    juve3dstudio                             0x08000468   Section      404  ieecalctest.o(juve3dstudio)
-    $v0                                      0x080005fc   Number         0  config.o(juve3dstudio)
-    juve3dstudio                             0x080005fc   Section      204  config.o(juve3dstudio)
-    $v0                                      0x080006c8   Number         0  outuart.o(juve3dstudio)
-    juve3dstudio                             0x080006c8   Section      384  outuart.o(juve3dstudio)
-    $v0                                      0x08000848   Number         0  alu.o(myCode)
-    myCode                                   0x08000848   Section      560  alu.o(myCode)
-    ENTERO                                   0x20000000   Data          10  uarttest.o(myData)
-    myData                                   0x20000000   Section       16  uarttest.o(myData)
-    FRAC                                     0x2000000a   Data           6  uarttest.o(myData)
-    Heap_Mem                                 0x20000010   Data         512  startup_stm32f411xe.o(HEAP)
-    HEAP                                     0x20000010   Section      512  startup_stm32f411xe.o(HEAP)
-    Stack_Mem                                0x20000210   Data        1024  startup_stm32f411xe.o(STACK)
-    STACK                                    0x20000210   Section     1024  startup_stm32f411xe.o(STACK)
-    __initial_sp                             0x20000610   Data           0  startup_stm32f411xe.o(STACK)
+    $v0                                      0x080001f4   Number         0  nvichandler.o(juve3dstudio)
+    juve3dstudio                             0x080001f4   Section      360  nvichandler.o(juve3dstudio)
+    Heap_Mem                                 0x20000000   Data         512  startup_stm32f411xe.o(HEAP)
+    HEAP                                     0x20000000   Section      512  startup_stm32f411xe.o(HEAP)
+    Stack_Mem                                0x20000200   Data        1024  startup_stm32f411xe.o(STACK)
+    STACK                                    0x20000200   Section     1024  startup_stm32f411xe.o(STACK)
+    __initial_sp                             0x20000600   Data           0  startup_stm32f411xe.o(STACK)
 
     Global Symbols
 
@@ -155,11 +129,9 @@ Image Symbol Table
     TIM1_CC_IRQHandler                       0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     TIM1_TRG_COM_TIM11_IRQHandler            0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     TIM1_UP_TIM10_IRQHandler                 0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
-    TIM2_IRQHandler                          0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     TIM3_IRQHandler                          0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     TIM4_IRQHandler                          0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     TIM5_IRQHandler                          0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
-    USART1_IRQHandler                        0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     USART2_IRQHandler                        0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     USART6_IRQHandler                        0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
     WWDG_IRQHandler                          0x080001b3   Thumb Code     0  startup_stm32f411xe.o(.text)
@@ -168,12 +140,9 @@ Image Symbol Table
     __rt_heap_escrow$2region                 0x080001db   Thumb Code     2  heapauxi.o(.text)
     __rt_heap_expand$2region                 0x080001dd   Thumb Code     2  heapauxi.o(.text)
     SystemInit                               0x080001e1   Thumb Code    18  system_stm32f4xx.o(.text.SystemInit)
-    UART                                     0x080001f5   Thumb Code     0  uarttest.o(juve3dstudio)
-    calc                                     0x08000469   Thumb Code     0  ieecalctest.o(juve3dstudio)
-    SEGUNDOVALOR                             0x080004ab   Thumb Code     0  ieecalctest.o(juve3dstudio)
-    __main                                   0x080005fd   Thumb Code     0  config.o(juve3dstudio)
-    OUT                                      0x080006c9   Thumb Code     0  outuart.o(juve3dstudio)
-    ALU                                      0x08000849   Thumb Code     0  alu.o(myCode)
+    __main                                   0x080001f5   Thumb Code     0  nvichandler.o(juve3dstudio)
+    TIM2_IRQHandler                          0x0800020b   Thumb Code     0  nvichandler.o(juve3dstudio)
+    USART1_IRQHandler                        0x08000221   Thumb Code     0  nvichandler.o(juve3dstudio)
 
 
 
@@ -183,38 +152,32 @@ Memory Map of the image
 
   Image Entry point : 0x08000199
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x00000a88, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x0000035c, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00000a78, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x0000035c, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x08000000   0x08000000   0x00000198   Data   RO           25    RESET               startup_stm32f411xe.o
-    0x08000198   0x08000198   0x00000040   Code   RO           26  * .text               startup_stm32f411xe.o
-    0x080001d8   0x080001d8   0x00000006   Code   RO           46    .text               c_w.l(heapauxi.o)
+    0x08000000   0x08000000   0x00000198   Data   RO            9    RESET               startup_stm32f411xe.o
+    0x08000198   0x08000198   0x00000040   Code   RO           10  * .text               startup_stm32f411xe.o
+    0x080001d8   0x080001d8   0x00000006   Code   RO           30    .text               c_w.l(heapauxi.o)
     0x080001de   0x080001de   0x00000002   PAD
-    0x080001e0   0x080001e0   0x00000012   Code   RO           31    .text.SystemInit    system_stm32f4xx.o
+    0x080001e0   0x080001e0   0x00000012   Code   RO           15    .text.SystemInit    system_stm32f4xx.o
     0x080001f2   0x080001f2   0x00000002   PAD
-    0x080001f4   0x080001f4   0x00000274   Code   RO            2    juve3dstudio        uarttest.o
-    0x08000468   0x08000468   0x00000194   Code   RO            8    juve3dstudio        ieecalctest.o
-    0x080005fc   0x080005fc   0x000000cc   Code   RO           12  * juve3dstudio        config.o
-    0x080006c8   0x080006c8   0x00000180   Code   RO           20    juve3dstudio        outuart.o
-    0x08000848   0x08000848   0x00000230   Code   RO           16    myCode              alu.o
+    0x080001f4   0x080001f4   0x00000168   Code   RO            2    juve3dstudio        nvichandler.o
 
 
-    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x08000a78, Size: 0x00000010, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x0800035c, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
 
-    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x20000000   0x08000a78   0x00000010   Data   RW            1    myData              uarttest.o
+    **** No section assigned to this execution region ****
 
 
-    Execution Region ER_ZI (Exec base: 0x20000010, Load base: 0x08000a88, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x20000000, Load base: 0x0800035c, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000010        -       0x00000200   Zero   RW           24    HEAP                startup_stm32f411xe.o
-    0x20000210        -       0x00000400   Zero   RW           23    STACK               startup_stm32f411xe.o
+    0x20000000        -       0x00000200   Zero   RW            8    HEAP                startup_stm32f411xe.o
+    0x20000200        -       0x00000400   Zero   RW            7    STACK               startup_stm32f411xe.o
 
 
 ==============================================================================
@@ -224,16 +187,12 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       560         16          0          0          0        420   alu.o
-       204         48          0          0          0        308   config.o
-       404          8          0          0          0        368   ieecalctest.o
-       384         12          0          0          0        364   outuart.o
+       360         94          0          0          0        396   nvichandler.o
         64         26        408          0       1536        900   startup_stm32f411xe.o
         18          0          0          0          0       2851   system_stm32f4xx.o
-       628         46          0         16          0        480   uarttest.o
 
     ----------------------------------------------------------------------
-      2264        156        408         16       1536       5691   Object Totals
+       444        120        408          0       1536       4147   Object Totals
          0          0          0          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -263,15 +222,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      2272        156        408         16       1536       5843   Grand Totals
-      2272        156        408         16       1536       5843   ELF Image Totals
-      2272        156        408         16          0          0   ROM Totals
+       452        120        408          0       1536       4299   Grand Totals
+       452        120        408          0       1536       4299   ELF Image Totals
+       452        120        408          0          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 2680 (   2.62kB)
-    Total RW  Size (RW Data + ZI Data)              1552 (   1.52kB)
-    Total ROM Size (Code + RO Data + RW Data)       2696 (   2.63kB)
+    Total RO  Size (Code + RO Data)                  860 (   0.84kB)
+    Total RW  Size (RW Data + ZI Data)              1536 (   1.50kB)
+    Total ROM Size (Code + RO Data + RW Data)        860 (   0.84kB)
 
 ==============================================================================
 

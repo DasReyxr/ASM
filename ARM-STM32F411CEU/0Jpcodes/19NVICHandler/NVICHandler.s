@@ -8,7 +8,7 @@
 NVIC_BASE       EQU 0xE000E100 
 NVIC_ISER0      EQU (NVIC_BASE + 0x00)
 NVIC_ISER1      EQU (NVIC_BASE + 0x04) ; IER1 for USART1
-NVIC_IPR0       EQU (NVIC_BASE + 0x300+(4*7)) ; IPR7 for TIM2
+NVIC_IPR7       EQU (NVIC_BASE + 0x300+(4*7)) ; IPR7 for TIM2
 NVIC_IPR9       EQU (NVIC_BASE + 0x300+(4*9)) ; IPR7 for TIM2
 
 ;System Control block
@@ -68,30 +68,50 @@ GPIOC_PUPDR     EQU (GPIOC_BASE + 0x0C)
 GPIOC_IDR       EQU (GPIOC_BASE + 0x10)
 GPIOC_ODR       EQU (GPIOC_BASE + 0x14)
 
-ledDelay EQU 6000000
+	AREA data, DATA, READWRITE
+	AREA juve3dstudio,CODE,READONLY
 
-	AREA myData, DATA, READWRITE
-
-    AREA juve3dstudio,CODE,READONLY
-	ENTRY
-    EXPORT TIM2_IRQHandler
     EXPORT USART1_IRQHandler
     EXPORT __main
+    EXPORT TIM2_IRQHandler
+
 __main
     BL      Config_RCC
     BL      Config_GPIO
 	BL 		Config_TIM
 	BL      Config_UART
-    BL    Config_NVIC
+    BL      Config_NVIC
 loop
+	;bl		Write_UART
+    B 		loop
+
+	
+TIM2_IRQHandler
+    PUSH{R0-R2,LR}
+    LDR R0, =TIM2_SR
+    MOV R1, #0 ; Clear the interrupt flag
+    STR R1, [R0] ; Clear the update interrupt flag
+
+    LDR R0,=GPIOC_ODR
+    LDR R1, [R0] ; Read current state of GPIOC_ODR
+    EOR R1,#(1<<13)
+    STR R1, [R0] ; Toggle the state of PC6
+    POP{R0-R2,PC}
+
+USART1_IRQHandler 
+	PUSH{R0-R2,LR}
+    LDR   R0, =USART1_DR ; Read data register
+    LDR   R1, [R0] ; Read received data
+    
+    POP{R0-R2,PC}
 	
 
-    B 		loop
-    
+
+
 Config_RCC
     LDR     R0,=RCC_AHB1     ; 0    00           0     0     0     0     0
     LDR     R1,[R0]          ;GPIOH RESERVE   GPIOE  GPIOD GPIOC GPIOB GPIOB
-    ORR     R1,#(0x3)       ; 0    00           0    0      0    1     0
+    ORR     R1,#(0x2)       ; 0    00           0    0      0    1     0
     STR     R1,[R0]
 
 
@@ -103,7 +123,7 @@ Config_RCC
 
 	; TIM5  TIM4  TIM3  TIM2
 	; 0      0     0      1
-    LDR     R0,=RCC_APB2ENR     
+    LDR     R0,=RCC_APB1     
     LDR     R1,[R0]         
     ORR     R1,(1 << 0)      
     STR     R1,[R0]
@@ -120,11 +140,7 @@ Config_GPIO
     ORR     R1, #(1 << 26)  ; Alternate function for PC6
     STR     R1, [R0]
 
-    LDR     R0, =GPIOC_OSPEEDR
-    LDR     R1, [R0]
-    ORR     R1, #(0x3 << 26) ; High speed for PC6
-    STR     R1, [R0]
-    
+   
     LDR     R0, =GPIOB_MODER
     LDR     R1, [R0]
     ORR     R1, #(0xA << 12)  ;Alternate function for PB6
@@ -192,44 +208,13 @@ Config_UART
     ;Configuramos nuestro uart a una trama de 1 bit start
 	LDR R0,=USART1_CR1
 	LDR R1,[R0]
-	MOVW R2,0x202C ; Otra forma #(1 << 13) | (3<<2)
+	MOVW R2,#0x202C ; Otra forma #(1 << 13) | (3<<2)
 	ORR R1, R2 		; #(1 << 13) | (3<<2)
 	STR R1,[R0]
     POP{PC}
 
-Read_UART
-    PUSH{LR}
-    LDR    R0, =USART1_SR
-readCycle
-    LDR   R1, [R0] ; Read status register
-    TST   R1, #(1<<5) ; Check if RXNE is set
-    BEQ   readCycle ; If not, wait
-    LDR   R0, =USART1_DR ; Read data register
-    LDR   R1, [R0] ; Read received data
 
-    POP{PC}
-
-Write_UART
-    PUSH{LR}
-    LDR    R0, =USART1_DR
-    STR    R1, [R0] ; Write data to transmit register
-    LDR    R0, =USART1_SR
-writeCycle
-    LDR   R1, [R0] ; Read status register
-    TST   R1, #(1<<6) ; Check if TXE is set
-    BEQ   writeCycle ; If not, wait
-    
-    POP{PC}
-
-delay
-    LDR R0,=ledDelay
-d1
-    ADDS    R0,R0,#-1
-    BNE     d1
-    BX      LR
-
-
-confNVIC
+Config_NVIC
 	;Interrupcion por TIMER2
 	LDR R0,= NVIC_ISER0 ;interrupcion con registro
 	LDR R1, [R0]
@@ -243,6 +228,11 @@ confNVIC
     ;ORR R1,R1,R2 ; Set the VECTKEY and PRIGROUP
 	STR R1, [R0]
     
+    LDR R0,=NVIC_IPR7;
+    LDR R1,[R0]
+    ORR R1,#(1<<28)
+    STR R1,[R0]
+    
     LDR R0,= NVIC_IPR9 ;interrupcion con registro
 	LDR R1, [R0]
 	ORR R1, #(2<<12) ;
@@ -255,28 +245,5 @@ confNVIC
     
 	BX	LR
 
-TIM2_IRQHandler
-    PUSH{R0-R2,LR}
-    LDR R0, =TIM2_SR
-    MOV R1, #0 ; Clear the interrupt flag
-    STR R1, [R0] ; Clear the update interrupt flag
-
-    LDR R0,=GPIOC_ODR
-    LDR R1, [R0] ; Read current state of GPIOC_ODR
-    EOR R1,(#1<<13)
-    STR R1, [R0] ; Toggle the state of PC6
-    POP{R0-R2,PC}
-
-USART1_IRQHandler
-	PUSH{R0-R2,LR}
-    LDR   R0, =USART1_DR ; Read data register
-    LDR   R1, [R0] ; Read received data
-writeCycle
-    LDR   R1, [R0] ; Read status register
-    TST   R1, #(1<<6) ; Check if TXE is set
-    BEQ   writeCycle ; If not, wait
-
-    
-    POP{R0-R2,PC}
     align
 	end

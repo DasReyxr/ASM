@@ -22,7 +22,7 @@ FRAC   SPACE 6
     AREA juve3dstudio,CODE,READONLY
 	;ENTRY
 	IMPORT calc
-	IMPORT JALAMELASPATAS
+	IMPORT SEGUNDOVALOR
 	EXPORT UART
 
 UART
@@ -47,7 +47,7 @@ LOOP
 
     BL      Read_UART       
 	CMP     R1, #0x0D       ; Enter key (Carriage Return)
-    BEQ     CONVERT       
+    BEQ     CONVERTTOP
 	CMP 	R1, #'.'
 	BEQ		PUNTO
 	CMP 	R1, #'-'
@@ -66,15 +66,21 @@ LOOP
 LOOP1
     BL      Write_UART      ; Reenviar por UART
     B       LOOP
-
+NIG
+	TST		R7,#(1<<0) ; and 1 con 1 si no es igual = segundo numero
+	ITE 	NE
+	ORRNE		R7,#(1<<2) ; - sign
+	ORREQ		R7,#(1<<1) ; - sign
+	ORR			R7,#(1<<9)
+	B LOOP1
 
 SAVE_ENT
 	LDR     R2, =ENTERO 
     SUB     R0,R1, #48   
     STRB    R0, [R2, R4]    
     ADD     R4, R4, #1
-	CMP		R4,#10 ; 4294967296
-	BGT		infty      	
+	CMP		R4,#10
+	BHI		MAX
 	B       LOOP1
 
 SAVE_FRAC
@@ -84,34 +90,18 @@ SAVE_FRAC
     ADD     R6, R6, #1      	
 	B       LOOP1
 
-
-infty
-	ORR		R5,(1<<10)
-	B		NaN
-NaN
-	; imprimir nan
-	MOV     R1, #'N'
-    BL      Write_UART
-	MOV     R1, #'a'
-    BL      Write_UART
-	MOV     R1, #'N'
-    BL      Write_UART
+MAX
+	TST 	R7,#(1<<0)
+	BNE		NumeroMaximoR5	 	
+	B		NumeroMaximoR4
 
 
-	b 		.
-NIG
-	TST		R7,(1<<0) ; and 1 con 1 si no es igual = segundo numero
-	ITE 	NE
-	ORRNE		R7,(1<<2) ; - sign
-	ORREQ		R7,(1<<1) ; - sign
-	
-	B LOOP1
 PUNTO
 	ORR 	R5, #1
 	B       LOOP1
 
 
-CONVERT
+CONVERTTOP
 	PUSH 	{R10}
     LDR     R2, =ENTERO 
 	ADDS 	R4, #0
@@ -130,8 +120,8 @@ exp10r4 ; 10^R4
 CONV_INT
 	LDRB 	R5,[R2,R1]	; Cargar bit de R2 [Entero]
 	MUL 	R5, R5, R0
-	ADD	  	R3, R5
-	
+	ADDS	  	R3, R5
+	BCS		MAX
 	UDIV	R0, R0, R10 ; reducir escalas
 	ADD 	R1, #1
 	CMP 	R1, R4
@@ -154,7 +144,7 @@ Convert
 	LDRB 	R5,[R2,R4]
 	MUL 	R5, R5, R1
 	ADDS	R6, R5
-	BVS		infty
+	BCS		MAX
 	ADD 	R4, #1
 	
 	UDIV	R1, R1, R10 ; Reduce la escala
@@ -171,7 +161,8 @@ Convert
     BL      Write_UART
 	MOV     R1, #0x0A
     BL      Write_UART
-
+	TST		R7,#(1<<7)
+	BNE 	Infty
 	EOR 	R1,R1
 	EOR 	R4,R4
 	EOR 	R5,R5
@@ -180,12 +171,75 @@ Convert
 	EOR 	R9,R9
 	
 	; Aqui vas a poner avr si se regresa donde mismo o ne
-	TST 	R7,(1<<0)
-	BNE		JALAMELASPATAS	 	
+	TST 	R7,#(1<<0)
+	BNE		SEGUNDOVALOR	 	
 	LDR 	R15, =calc
 	
 
+NumeroMaximoR4
+	EOR		R7,#(1<<7)
+	LDR 	R15, =calc
+
+NumeroMaximoR5
+	EOR		R7,#(1<<7)
+	TST		R7,#(1<<7)
+	BEQ		NAN
+	BNE 	Infty
+NAN
+	; imprimir nan
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	MOV     R1, #'N'
+    BL      Write_UART
+	MOV     R1, #'a'
+    BL      Write_UART
+	MOV     R1, #'N'
+    BL      Write_UART
+	BL 		Limpiar
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	EOR		R7,R7
+	LDR R15,=UART
+
+Infty
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	TST		R7,#(1<<9)
+	BLNE		Menos
+    MOV R1, #'I'
+    BL Write_UART
+	MOV R1, #'n'
+    BL Write_UART
+	MOV R1, #'f'
+    BL Write_UART
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	EOR		R7,R7
+	BL 		Limpiar
+	LDR R15,=UART
+
+Menos
+	PUSH{LR}
+	MOV R1, #'-'
+   ; EOR		R7,R7
+	BL Write_UART
 	
+	POP{PC}
+
+
+
 
 Read_UART
     PUSH{LR}
@@ -227,5 +281,19 @@ StringWrite
 	b loopString
 welcome DCB "Enter Number:", 0x0D,0x0A,0
 
+Limpiar
+	EOR	 R1,R1
+	EOR  R2,R2
+	EOR  R3,R3
+	EOR  R4,R4
+	EOR  R5,R5
+	EOR  R6,R6
+	EOR  R7,R7
+	EOR  R8,R8
+	EOR  R9,R9
+	EOR  R10,R10
+	EOR  R11,R11
+	EOR  R12,R12
+	BX LR
 	align
 	end

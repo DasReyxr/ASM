@@ -40,7 +40,7 @@ Decimal0s   EQU 10000 ;
 	IMPORT ALU
 	IMPORT UART
 	EXPORT calc
-    EXPORT JALAMELASPATAS
+    EXPORT SEGUNDOVALOR
 calc
     
 	;Arg of Frac R11 
@@ -71,7 +71,7 @@ calc
     LDR		R15,=UART
     EOR     R2, R2
 
-JALAMELASPATAS
+SEGUNDOVALOR
  
 	LDR		R4,=31
     BL      Fract
@@ -133,7 +133,7 @@ ZeroVal
 	ORR		R9, R12
 	CMP		R4,#10
 	BLHI	ExtendedPrecision
-	POP{PC}
+	BX		LR
 
 ExtendedPrecision
 	push{lr}
@@ -167,6 +167,7 @@ Integer
     ORR     R9, R5
 
     BX      LR
+
 
 Fract
 	EOR  R9,R9
