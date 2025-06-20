@@ -1,0 +1,299 @@
+; ------ Orlando Reyes ------
+; --------- Auf Das ---------
+; ----- IEEE Calculator -----
+; ---- I date 10/06/2025 ----
+; ---- C date 13/06/2025 ----
+; -------- Variables --------
+; ----------- Main -----------
+;R0	RN R0
+;R1	RN R1
+;R7
+USART1_BASE      EQU 0x40011000
+USART1_SR        EQU (USART1_BASE + 0x00)
+USART1_DR        EQU (USART1_BASE + 0x04)
+USART1_BRR       EQU (USART1_BASE + 0x08)
+USART1_CR1       EQU (USART1_BASE + 0x0C)
+;r5 flag dot
+	AREA myData, DATA, READWRITE
+	
+ENTERO SPACE 10
+FRAC   SPACE 6
+
+    AREA juve3dstudio,CODE,READONLY
+	;ENTRY
+	IMPORT calc
+	IMPORT SEGUNDOVALOR
+	EXPORT UART
+
+UART
+	LDR 	R10,=welcome
+	BL DecomposeString
+
+	MOV     R4, #0          ; Índice
+	MOV 	R5, #0
+	MOV 	R6, #0
+
+LOOP
+	; -- IN --
+	; R1  character  from UART
+	; R0  Address General Purpose 
+	; R4 Counter for integer part
+	; R6 Counter for fractional part
+	; R5 Flag for decimal point
+
+	; -- OUT --
+	; R3 Result of conversion
+	; R6
+
+    BL      Read_UART       
+	CMP     R1, #0x0D       ; Enter key (Carriage Return)
+    BEQ     CONVERTTOP
+	CMP 	R1, #'.'
+	BEQ		PUNTO
+	CMP 	R1, #'-'
+	BEQ		NIG
+	
+
+	TST 	R5, #1
+	BNE		SAVE_FRAC
+	; Validation ranges 0-9 Values only
+	CMP     R1, #0x30
+	BLT     LOOP
+	CMP     R1, #0x39
+	BGT     LOOP
+
+	B		SAVE_ENT
+LOOP1
+    BL      Write_UART      ; Reenviar por UART
+    B       LOOP
+NIG
+	TST		R7,#(1<<0) ; and 1 con 1 si no es igual = segundo numero
+	ITE 	NE
+	ORRNE		R7,#(1<<2) ; - sign
+	ORREQ		R7,#(1<<1) ; - sign
+	ORR			R7,#(1<<9)
+	B LOOP1
+
+SAVE_ENT
+	LDR     R2, =ENTERO 
+    SUB     R0,R1, #48   
+    STRB    R0, [R2, R4]    
+    ADD     R4, R4, #1
+	CMP		R4,#10
+	BHS		MAX
+	B       LOOP1
+
+SAVE_FRAC
+	LDR     R2, =FRAC
+	SUB     R0,R1, #48   
+    STRB    R0, [R2, R6]    
+    ADD     R6, R6, #1      	
+	B       LOOP1
+
+MAX
+	TST 	R7,#(1<<0)
+	BNE		NumeroMaximoR5	 	
+	B		NumeroMaximoR4
+
+
+PUNTO
+	ORR 	R5, #1
+	B       LOOP1
+
+
+CONVERTTOP
+	PUSH 	{R10}
+    LDR     R2, =ENTERO 
+	ADDS 	R4, #0
+	BEQ		FRACT
+
+	MOV		R1, R4  ; Duplicar el valor de R4
+	MOV 	R0, #1	; Valor minimo de la escala
+	MOV 	R10, #10 ; inmediato 10	
+exp10r4 ; 10^R4
+	SUBS 	R1, #1
+	BEQ		CONV_INT
+	MUL 	R0, R0, R10
+	B exp10r4
+
+	EOR		R3,R3
+CONV_INT
+	LDRB 	R5,[R2,R1]	; Cargar bit de R2 [Entero]
+	MUL 	R5, R5, R0
+	ADDS	  	R3, R5
+	BCS		MAX
+	UDIV	R0, R0, R10 ; reducir escalas
+	ADD 	R1, #1
+	CMP 	R1, R4
+	BNE		CONV_INT
+	
+FRACT
+	LDR     R2, =FRAC
+
+CleanVector
+	EOR		R4,R4
+	STRB    R4, [R2, R6] ; Limpiar
+    ADD     R6, #1 
+	CMP		R6, #6
+	BNE		CleanVector
+	EOR 	R6,R6
+
+	LDR		R1,=1000
+
+Convert
+	LDRB 	R5,[R2,R4]
+	MUL 	R5, R5, R1
+	ADDS	R6, R5
+	BCS		MAX
+	ADD 	R4, #1
+	
+	UDIV	R1, R1, R10 ; Reduce la escala
+	CMP 	R4, #5
+	BNE		Convert
+
+	POP 	{R10}
+
+	ADD 	r4,#0
+	; OUT
+	MOV 	R11, R6 ; Fract
+	MOV  	R2, R3
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+	TST		R7,#(1<<7)
+	BNE 	Infty
+	EOR 	R1,R1
+	EOR 	R4,R4
+	EOR 	R5,R5
+	EOR 	R6,R6
+	EOR 	R8,R8
+	EOR 	R9,R9
+	
+	; Aqui vas a poner avr si se regresa donde mismo o ne
+	TST 	R7,#(1<<0)
+	BNE		SEGUNDOVALOR	 	
+	LDR 	R15, =calc
+	
+
+NumeroMaximoR4
+	EOR		R7,#(1<<7)
+	LDR 	R15, =calc
+
+NumeroMaximoR5
+	EOR		R7,#(1<<7)
+	TST		R7,#(1<<7)
+	BEQ		NAN
+	BNE 	Infty
+NAN
+	; imprimir nan
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	MOV     R1, #'N'
+    BL      Write_UART
+	MOV     R1, #'a'
+    BL      Write_UART
+	MOV     R1, #'N'
+    BL      Write_UART
+	BL 		Limpiar
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	EOR		R7,R7
+	LDR R15,=UART
+
+Infty
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	TST		R7,#(1<<9)
+	BLNE		Menos
+    MOV R1, #'I'
+    BL Write_UART
+	MOV R1, #'n'
+    BL Write_UART
+	MOV R1, #'f'
+    BL Write_UART
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
+	EOR		R7,R7
+	BL 		Limpiar
+	LDR R15,=UART
+
+Menos
+	PUSH{LR}
+	MOV R1, #'-'
+   ; EOR		R7,R7
+	BL Write_UART
+	
+	POP{PC}
+
+
+
+
+Read_UART
+    PUSH{LR}
+    LDR    R0, =USART1_SR
+readCycle
+    LDR   R1, [R0] ; Read status register
+    TST   R1, #(1<<5) ; Check if RXNE is set
+    BEQ   readCycle ; If not, wait
+    LDR   R0, =USART1_DR ; Read data register
+    LDR   R1, [R0] ; Read received data
+
+    POP{PC}
+
+Write_UART
+    PUSH{LR}
+    LDR    R0, =USART1_DR
+    STR    R1, [R0] ; Write data to transmit register
+    LDR    R0, =USART1_SR
+writeCycle
+    LDR   R1, [R0] ; Read status register
+    TST   R1, #(1<<6) ; Check if TXE is set
+    BEQ   writeCycle ; If not, wait
+    
+    POP{PC}
+
+DecomposeString
+	PUSH{R1,R2,LR}
+loopString
+	LDRB R1, [R10,R2]
+	ADD R2, #1
+	CMP R1, #0
+	BNE StringWrite
+	
+	POP{R1,R2,PC}
+
+StringWrite
+
+	bl Write_UART
+	b loopString
+welcome DCB "Enter Number:", 0x0D,0x0A,0
+
+Limpiar
+	EOR	 R1,R1
+	EOR  R2,R2
+	EOR  R3,R3
+	EOR  R4,R4
+	EOR  R5,R5
+	EOR  R6,R6
+	EOR  R7,R7
+	EOR  R8,R8
+	EOR  R9,R9
+	EOR  R10,R10
+	EOR  R11,R11
+	EOR  R12,R12
+	BX LR
+	align
+	end
