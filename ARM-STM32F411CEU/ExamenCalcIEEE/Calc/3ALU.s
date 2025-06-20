@@ -267,7 +267,6 @@ Limpiar
 	EOR  R12,R12
 	BX LR
 
-ciclo B ciclo 
 Write_UART
     PUSH{LR}
     LDR    R0, =USART1_DR

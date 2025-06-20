@@ -28,19 +28,24 @@ Rhigh   RN 5
 OUT
     ;LDR 	R10,=0x4F7FFFFF;0x41CE0000 ; 27.75
 ciclo
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+
         TST 	R10,#(1<<31) ; Check Sign Bit
         BLNE	SignoMenos
 
         LSL 	RExp,R10,#1 ; Shift left to remove sign bit
         LSR 	RExp,#24 ;
-        
-        CMP		R10,#0x4F800000
-        BEQ		Infty
+        LSL		R11,#1
+        CMP		R11,#0x4F800000
+        BHS		Infty
         CMP		R10,#0xCF800000
-        BEQ		Infty
+        BHS		Infty
 
-        TST 	R10,#(1<<30) ; Check MSB of EXP 
-        BEQ.W   ZeroInt     ; if Exp <128
+        CMP		RExp,#127;TST 	R10,#(1<<30) ; Check MSB of EXP 
+        BLO.W   ZeroInt     ; if Exp <128
         ; Mantisa Mayor
         SUB     RExp,#127 ; If Exp>=128 Exp-127
         
@@ -106,6 +111,10 @@ Intg2
     POP {PC}
 SignoMenos
 	PUSH{LR}
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
 	LDR  R1,='-'
 	BL  Write_UART
 	LDR  R1,=' '
@@ -116,8 +125,12 @@ ZeroInt
     RSB     RExp,#127  ; If Exp< 128 127-EXP 
     LDR     R1,=0x007FFFFF; Mask for Mantissa    
     AND     RMant,R10,R1 ; Extract Mantissa
-	ADDS	RMant,#0
-	BEQ		escerowe
+	MOV     R1, #0x0D
+    BL      Write_UART
+	MOV     R1, #0x0A
+    BL      Write_UART
+	MOV     R1, #0x30
+    BL      Write_UART
     ORR     RMant,#(1<<23)
     
 	EOR     Rint,Rint
@@ -129,71 +142,53 @@ ZeroInt
     LSR     RMant, RExp
     B       FINAL3
 
-escerowe
-	MOV     R1, #0x30
-    BL      Write_UART
-	B		FINAL3
-
-; Función unificada para enteros y fracciones
-; Parámetros:
-;   R1 = valor numérico
-;   R2 = bandera (0=entero, 1=fracción)
 PrintNumber
     PUSH {LR, R4-R7}
     
-    ; Primero determinar si es entero o fracción
     CMP R2, #1
     BNE print_integer
     
-    ; Si es fracción, imprimir punto primero
     PUSH{R1}
-	MOV R1, #'.'
+    MOV R1, #'.'
     BL Write_UART
     POP{R1}
-	ADDS	R1,#0
-	BNE convert_fraction
+    ADDS    R1,#0
+    BNE convert_fraction
     LDR R1,=0x30
-	BL Write_UART
+    BL Write_UART
     B end_function
 convert_fraction
-    ; Configurar parámetros para 4 dígitos
-    MOV R4, #1000       ; divisor inicial (para 4 dígitos)
-    MOV R5, #4          ; contador de dígitos
-    MOV R6, R1          ; copia del valor
-    MOV	R10,#10
+    MOV R4, #1000
+    MOV R5, #4
+    MOV R6, R1
+    MOV R10,#10
 fract_loop
-    ; Obtener dígito más significativo
-    UDIV R1, R6, R4     ; R0 = dígito actual
-    MLS R6, R1, R4, R6  ; R6 = resto
+    UDIV R1, R6, R4
+    MLS R6, R1, R4, R6
     
-    ; Convertir a ASCII y enviar
     ADD R1, R1, #'0'
     BL Write_UART
     
-    ; Preparar para siguiente dígito
-    UDIV R4, R4, R10    ; reducir divisor
-    SUBS R5, R5, #1     ; decrementar contador
+    UDIV R4, R4, R10
+    SUBS R5, R5, #1
     BNE fract_loop
     
 fract_end
     POP {LR, R4-R7}
     BX LR
 print_integer
-    ; Para enteros, verificar si es negativo (bit 31)
     TST R1, #0x80000000
     BEQ start_conversion
-    ; Si es negativo, imprimir signo y convertir a positivo
     MOV R0, #'-'
     BL Write_UART
     RSB R1, R1, #0
     
 start_conversion
-    MOV R4, #10         ; divisor
-    EOR R5, R5          ; contador de dígitos
-    MOV R6, R1          ; copia del valor
-    EOR R7, R7          ; flag de dígitos significativos
+    MOV R4, #10
+    EOR R5, R5
+    MOV R6, R1
+    EOR R7, R7
     
-    ; Caso especial para cero
     ADDS R6, #0
     BNE conversion_loop
     MOV R1, #'0'
@@ -201,33 +196,32 @@ start_conversion
     B print_end
     
 conversion_loop
-    UDIV    R0, R6, R4     ; dividir por 10
-    MLS     R3, R0, R4, R6  ; obtener residuo (dígito)
-    PUSH    {R3}           ; guardar dígito
-    ADD     R5, R5, #1      ; incrementar contador
-    MOV     R6, R0          ; actualizar cociente
-    ADDS    R6, #0          ; ¿terminamos?
+    UDIV    R0, R6, R4
+    MLS     R3, R0, R4, R6
+    PUSH    {R3}
+    ADD     R5, R5, #1
+    MOV     R6, R0
+    ADDS    R6, #0
     BNE     conversion_loop
     
 send_digits
-    POP {R0}            ; recuperar dígito
-    CMP     R7, #0          ; ¿ya encontramos dígito significativo?
-    BNE     print_digit     ; si sí, imprimir todos
+    POP {R0}
+    CMP     R7, #0
+    BNE     print_digit
     
-    ADDS    R0, #0          ; ¿es cero no significativo?
-    BEQ     skip_digit      ; si sí, saltar
+    ADDS    R0, #0
+    BEQ     skip_digit
     
 print_digit
-    MOV     R7, #1          ; marcar dígito significativo encontrado
-    ADD     R0, #0x30    ; convertir a ASCII
-    MOV		R1,R0
-	BL      Write_UART
-    
+    MOV     R7, #1
+    ADD     R0, #0x30
+    MOV R1,R0
+    BL      Write_UART    
 skip_digit
     SUBS    R5, R5, #1     ; decrementar contador
     BNE     send_digits
     
-    ; Si todos eran ceros (solo para fracciones)
+
     CMP     R7, #0
     BNE     print_end
     MOV     R0, #'0'
