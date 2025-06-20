@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\NVICHandler.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\NVICHandler.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Thu Jun 19 09:18:05 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Thu Jun 19 22:44:19 2025
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -14,7 +14,6 @@ Functions with no stack information
 </H3><UL>
  <LI><a href="#[45]">__user_initial_stackheap</a>
  <LI><a href="#[44]">__main</a>
- <LI><a href="#[22]">TIM2_IRQHandler</a>
  <LI><a href="#[2b]">USART1_IRQHandler</a>
 </UL>
 </UL>
@@ -95,7 +94,7 @@ Function Pointers
  <LI><a href="#[21]">TIM1_CC_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[20]">TIM1_TRG_COM_TIM11_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[1f]">TIM1_UP_TIM10_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
- <LI><a href="#[22]">TIM2_IRQHandler</a> from nvichandler.o(juve3dstudio) referenced from startup_stm32f411xe.o(RESET)
+ <LI><a href="#[22]">TIM2_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[23]">TIM3_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[24]">TIM4_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
  <LI><a href="#[32]">TIM5_IRQHandler</a> from startup_stm32f411xe.o(.text) referenced from startup_stm32f411xe.o(RESET)
@@ -327,6 +326,9 @@ Global Symbols
 <P><STRONG><a name="[1f]"></a>TIM1_UP_TIM10_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f411xe.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
+<P><STRONG><a name="[22]"></a>TIM2_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f411xe.o(.text))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
+</UL>
 <P><STRONG><a name="[23]"></a>TIM3_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f411xe.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
@@ -358,9 +360,6 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[44]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, nvichandler.o(juve3dstudio))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(.text)
-</UL>
-<P><STRONG><a name="[22]"></a>TIM2_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, nvichandler.o(juve3dstudio))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
 <P><STRONG><a name="[2b]"></a>USART1_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, nvichandler.o(juve3dstudio))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
